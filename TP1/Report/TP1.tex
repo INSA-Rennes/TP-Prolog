@@ -1,0 +1,72 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{graphicx}
+\usepackage{color}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
+\definecolor{teal}{rgb}{0.0,0.5,0.5}
+\definecolor{violet}{rgb}{0.5,0,0.5}
+\usepackage[margin=2.5cm]{geometry}\usepackage{listings}
+\usepackage{listingsutf8}
+\lstloadlanguages{Prolog}
+\lstdefinestyle{listing}{
+  language=Prolog,
+  captionpos=t,
+  inputencoding=utf8/latin1,
+  extendedchars=true,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  basicstyle=\footnotesize\ttfamily,
+  backgroundcolor=\color{grey},
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{teal},
+  identifierstyle=\color{black},
+  stringstyle=\color{red},
+  numberstyle=\color{violet},
+}
+\lstset{style=listing}
+
+\title{TP1 - Interrogation style base de données}
+\author{\textsc{Paul Chaignon} - \textsc{Clément Gautrais}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Base Menu}
+
+\subsection{Questions}
+
+\lstinputlisting[caption=basemenu.pro]{basemenu.pro}
+\vspace{1cm}
+
+\subsection{Tests}
+
+\lstinputlisting[caption=basemenu\_tests.pro]{basemenu_tests.pro}
+\vspace{2cm}
+
+
+\section{Base Famille de France (De Valois)}
+
+\subsection{Questions}
+
+\lstinputlisting[caption=basevalois.pro]{basevalois.pro}
+\vspace{1cm}
+
+\subsection{Tests}
+
+\lstinputlisting[caption=basevalois\_tests.pro]{basevalois_tests.pro}
+
+
+\end{document}
