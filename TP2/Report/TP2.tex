@@ -1,0 +1,60 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{graphicx}
+\usepackage{color}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
+\definecolor{teal}{rgb}{0.0,0.5,0.5}
+\definecolor{violet}{rgb}{0.5,0,0.5}
+\usepackage[margin=2.5cm]{geometry}\usepackage{listings}
+\usepackage{listingsutf8}
+\lstloadlanguages{Prolog}
+\lstdefinestyle{listing}{
+  language=Prolog,
+  captionpos=t,
+  inputencoding=utf8/latin1,
+  extendedchars=true,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  basicstyle=\footnotesize\ttfamily,
+  backgroundcolor=\color{grey},
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{teal},
+  identifierstyle=\color{black},
+  stringstyle=\color{red},
+  numberstyle=\color{violet},
+}
+\lstset{style=listing}
+
+\title{TP2 - Manipulation de termes construits}
+\author{\textsc{Paul Chaignon} - \textsc{Clément Gautrais}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Questions}
+
+\lstinputlisting[caption=tp2\_poker\_etud.pro]{tp2_poker_etud.pro}
+\vspace{1cm}
+
+\section{Tests}
+
+\lstinputlisting[caption=tp2\_poker\_etud\_tests.pro]{tp2_poker_etud_tests.pro}
+\vspace{0.5cm}
+
+Les deux versions rendent sont équivalentes car, dans la première version,
+le fait que C1 et C2 sont des cartes est vérifié en utilisant hauteur et couleur.
+Cependant la seconde version est moins bien car l'appel à est_carte oblige l'instanciation des paramètres.
+
+\end{document}
