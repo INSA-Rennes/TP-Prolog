@@ -132,23 +132,59 @@ inserer(E, [P|R], [P|Z]):-
 /**
  * inclus(X, Y)
  */
-
+inclus([], Y).
+inclus([X|R], Y):-
+	membre(X, Y),
+	inclus(R, Y).	
 
 /**
  * non_inclus(X, Y)
  */
-
+non_inclus([X|R], Y):-
+	hors_de(X, Y).
+non_inclus([X|R], Y):-
+	membre(X, Y),
+	non_inclus(R, Y).
 
 /**
  * union_ens(X, Y, Z)
  */
-
+union_ens(X, Y, Z):-
+	union_ensem(X, Y, Z, []).
+union_ensem([], [], Z, Acc):-
+	inclus(Z, Acc),
+	inclus(Acc, Z).
+union_ensem([X|R], Y, Z, Acc):-
+	hors_de(X, Acc),
+	union_ensem(R, Y, Z, [X|Acc]).
+union_ensem([], [Y|R], Z, Acc):-
+	hors_de(Y, Acc),
+	union_ensem([], R, Z, [Y|Acc]).
 
 /**
  * inter_ens(X, Y, Z)
  */
-
+inter_ens(X, Y, Z):-
+	inter_ensem(X, Y, Z, []).
+inter_ensem([], Y, Z, Acc):-
+	inclus(Z, Acc),
+	inclus(Acc, Z).
+inter_ensem([X|R], Y, Z, Acc):-
+	hors_de(X, Acc),
+	membre(X, Y),
+	inter_ensem(R, Y, Z, [X|Acc]).
 
 /**
  * diff_ens(X, Y, Z)
  */
+diff_ens(X, Y, Z):-
+	diff_ensem(X, Y, Z, []).
+diff_ensem([], Y, Z, Acc):-
+	inclus(Z, Acc),
+	inclus(Acc, Z).
+diff_ensem([X|R], Y, Z, Acc):-
+	hors_de(X, Y),
+	diff_ensem(R, Y, Z, [X|Acc]).
+diff_ensem([X|R], Y, Z, Acc):-
+	membre(X, Y),
+	diff_ensem(R, Y, Z, Acc).
