@@ -34,7 +34,7 @@
 \lstset{style=listing}
 
 \title{TP2 - Manipulation de termes construits}
-\author{\textsc{Paul Chaignon} - \textsc{Cl�ment Gautrais}}
+\author{\textsc{Paul Chaignon} - \textsc{Cl%G�%@ment Gautrais}}
 \date{\today}
 
 \begin{document}
@@ -51,8 +51,8 @@
 \lstinputlisting[caption=tp2\_poker\_etud\_tests.pro]{tp2_poker_etud_tests.pro}
 \vspace{0.5cm}
 
-Les deux versions sont �quivalentes car, dans la premi�re version,
-le fait que C1 et C2 sont des cartes est v�rifi� en utilisant hauteur et couleur.
-Cependant la premi�re version est meilleure car l'appel � est\_carte oblige l'instanciation des param�tres.
+Les deux versions sont %G�%@quivalentes car, dans la premi%G�%@re version,
+le fait que C1 et C2 sont des cartes est v%G�%@rifi%G�%@ en utilisant hauteur et couleur.
+Cependant la premi%G�%@re version est meilleuxre car l'appel %G�%@ est\_carte oblige l'instanciation des param%G�%@tres.
 
 \end{document}
