@@ -1,0 +1,56 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
+\definecolor{teal}{rgb}{0.0,0.5,0.5}
+\definecolor{violet}{rgb}{0.5,0,0.5}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{listings}
+\lstloadlanguages{Prolog}
+\lstdefinestyle{listing}{
+  language=Prolog,
+  captionpos=t,
+  inputencoding=utf8/latin1,
+  extendedchars=true,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  basicstyle=\footnotesize\ttfamily,
+  backgroundcolor=\color{grey},
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{teal},
+  identifierstyle=\color{black},
+  stringstyle=\color{red},
+  numberstyle=\color{violet},
+}
+\lstset{style=listing}
+
+\title{TP3 - Liste}
+\author{\textsc{Paul Chaignon} - \textsc{Clément Gautrais}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Questions}
+
+\lstinputlisting[caption=tp\_listes.pro]{tp_listes.pro}
+\vspace{1cm}
+
+\section{Tests}
+
+\lstinputlisting[caption=tp\_listes\_tests.pro]{tp_listes_tests.pro}
+\vspace{0.5cm}
+
+
+
+\end{document}
