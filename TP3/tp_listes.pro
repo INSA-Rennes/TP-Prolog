@@ -152,11 +152,17 @@ non_inclus([X|R], Y):-
 	non_inclus(R, Y).
 
 /**
+ * Le cut dans les 3 fonctions suivates servent à générer des ensembles sans doublons.
+ */
+/**
  * union_ens(X, Y, Z)
  */
 union_ens(X, Y, Z):-
 	union_ensem(X, Y, Z, []).
-union_ensem([], [], Acc, Acc).
+union_ensem([], [], Z, Acc):-
+	inclus(Acc, Z),
+	inclus(Z, Acc),
+	!.
 union_ensem([X|R], Y, Z, Acc):-
 	hors_de(X, Acc),
 	union_ensem(R, Y, Z, [X|Acc]).
@@ -175,7 +181,10 @@ union_ensem([], [Y|R], Z, Acc):-
  */
 inter_ens(X, Y, Z):-
 	inter_ensem(X, Y, Z, []).
-inter_ensem([], Y, Acc, Acc).
+inter_ensem([], Y, Z, Acc):-
+	inclus(Acc, Z),
+	inclus(Z, Acc),
+	!.
 inter_ensem([X|R], Y, Z, Acc):-
 	membre(X, Y),
 	inter_ensem(R, Y, Z, [X|Acc]).
@@ -188,7 +197,10 @@ inter_ensem([X|R], Y, Z, Acc):-
  */
 diff_ens(X, Y, Z):-
 	diff_ensem(X, Y, Z, []).
-diff_ensem([], Y, Acc, Acc).
+diff_ensem([], Y, Z, Acc):-
+	inclus(Acc, Z),
+	inclus(Z, Acc),
+	!.
 diff_ensem([X|R], Y, Z, Acc):-
 	hors_de(X, Y),
 	diff_ensem(R, Y, Z, [X|Acc]).
