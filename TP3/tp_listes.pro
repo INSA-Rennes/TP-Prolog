@@ -127,7 +127,12 @@ inserer(E, [P|R], [P|Z]):-
 /**
  * tri(+X, -Y)
  */
-
+tri(X, Y):-
+	trier(X, Y, []).
+trier([], Acc, Acc).
+trier([X|R], Y, Acc):-
+	inserer(X, Acc, NewAcc),
+	trier(R, Y, NewAcc).
 
 /**
  * inclus(X, Y)
