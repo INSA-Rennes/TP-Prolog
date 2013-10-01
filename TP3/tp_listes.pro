@@ -135,7 +135,7 @@ trier([X|R], Y, Acc):-
 	trier(R, Y, NewAcc).
 
 /**
- * inclus(X, Y)
+ * inclus(+X, +Y)
  */
 inclus([], Y).
 inclus([X|R], Y):-
@@ -143,7 +143,7 @@ inclus([X|R], Y):-
 	inclus(R, Y).	
 
 /**
- * non_inclus(X, Y)
+ * non_inclus(+X, +Y)
  */
 non_inclus([X|R], Y):-
 	hors_de(X, Y).
@@ -155,7 +155,7 @@ non_inclus([X|R], Y):-
  * Le cut dans les 3 fonctions suivates servent à générer des ensembles sans doublons.
  */
 /**
- * union_ens(X, Y, Z)
+ * union_ens(+X, +Y, ?Z)
  */
 union_ens(X, Y, Z):-
 	union_ensem(X, Y, Z, []).
@@ -177,7 +177,7 @@ union_ensem([], [Y|R], Z, Acc):-
 	union_ensem([], R, Z, Acc).
 
 /**
- * inter_ens(X, Y, Z)
+ * inter_ens(+X, +Y, ?Z)
  */
 inter_ens(X, Y, Z):-
 	inter_ensem(X, Y, Z, []).
@@ -193,7 +193,7 @@ inter_ensem([X|R], Y, Z, Acc):-
 	inter_ensem(R, Y, Z, Acc).
 
 /**
- * diff_ens(X, Y, Z)
+ * diff_ens(+X, +Y, ?Z)
  */
 diff_ens(X, Y, Z):-
 	diff_ensem(X, Y, Z, []).
