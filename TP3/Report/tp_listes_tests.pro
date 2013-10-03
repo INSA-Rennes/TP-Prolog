@@ -7,7 +7,7 @@ compte(1, [1,2,1,4], X). % X = 2
 compte(1, [1,2,1,4], 2). % Yes
 
 renverser([1,2,3,4], Y). % Y = [4,3,2,1]
-renverser([1,2,3,4], [4,3,2,1]). % Y = [4,3,2,1]
+renverser([1,2,3,4], [4,3,2,1]). % Yes
 
 palind([1,2,3,4]). % No
 palind([4,3,3,4]). % Yes
@@ -16,8 +16,8 @@ palind([4]). % Yes
 nieme(0, [1,2,3,4], A). % A = -1
 nieme(3, [1,2,3,4], A). % A = 2
 
-hors_de(0, [1,2,3,4]). % No
-hors_de(3, [1,2,3,4]). % Yes
+hors_de(0, [1,2,3,4]). % Yes
+hors_de(3, [1,2,3,4]). % No
 
 tous_diff([1,2,3,4]). % Yes
 tous_diff([1,2,4,4]). % No
