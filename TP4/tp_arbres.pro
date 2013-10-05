@@ -120,7 +120,7 @@ insertion_arbre_ordonne(E, arb_bin(R, G, D), arb_bin(R, G, D2)):-
 	insertion_arbre_ordonne(E, D, D2).
 
 insertion_arbre_ordonne1(E, X):-
-	free(X),
+	var(X),
 	X = arb_bin(E, _, _).
 insertion_arbre_ordonne1(E, arb_bin(E, G, D)).
 insertion_arbre_ordonne1(E, arb_bin(R, G, D)):-
@@ -147,4 +147,4 @@ insertion_arbre_ordonne1(E, arb_bin(R, G, D)):-
 % infixe(arb_bin(1, arb_bin(2,arb_bin(6, vide, vide), vide), arb_bin(3, arb_bin(4, vide, vide), arb_bin(5, vide, vide))), L).
 % nb_etiq_sup(11, arb_bin(8, arb_bin(4, arb_bin(2, vide, vide), arb_bin(6, vide, vide)), arb_bin(12, arb_bin(10, vide, vide), vide)), N).
 % insertion_arbre_ordonne(7, arb_bin(8, arb_bin(4, arb_bin(2, vide, vide), arb_bin(6, vide, vide)), arb_bin(12, arb_bin(10, vide, vide), vide)), B2).
-% insertion_arbre_ordonne1(7, arb_bin(8, arb_bin(4, arb_bin(2, _, _), arb_bin(6, _, _)), arb_bin(12, arb_bin(10, _, _), _))).
+% X = arb_bin(8, arb_bin(4, arb_bin(2, _, _), arb_bin(6, _, _)), arb_bin(12, arb_bin(10, _, _), _)), insertion_arbre_ordonne1(7, X).
