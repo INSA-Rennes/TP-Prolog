@@ -24,8 +24,31 @@ sub_bit(1, 1, 0, 0, 0).
 sub_bit(1, 1, 1, 1, 1).
 
 /**
+ * bin2int(+, -)
+ */
+bin2int(Bin, Int):-
+	bin2int(Bin, Int, 0, 0).
+bin2int([], Res, _, Res).
+bin2int([Bit|X], Res, Rank, Acc):-
+	Rank2 is Rank + 1,
+	Acc2 is Acc + Bit*(2^Rank),
+	bin2int(X, Res, Rank2, Acc2).
+
+/**
+ * int2bin(+, -)
+ */
+int2bin(1, [1]).
+int2bin(X, [Rest|Y]):-
+	X =\= 1,
+	Next is div(X, 2),
+    Rest is mod(X, 2),
+    int2bin(Next, Y).
+
+/**
  * Question 5
  * add(?, ?, ?)
+ * La surcharge est-elle possible en Prolog ?
+ * Cad: mettre add a la place de add_bis.
  */
 add_bis([], [], [], 0).
 add_bis([], [], [1], 1).
@@ -45,22 +68,11 @@ add(R1, R2, Res):-
  * Question 6
  * sub(?, ?, ?)
  */
-/*complem2([], []).
-complem2([0|L], [1|LR]):-
-	complem2(L, LR).
-complem2([1|L], [0|LR]):-
-	complem2(L, LR).
-sub(X, Y, Res):-
-	complem2(Y, Y1),
-	add(Y1, [1], RY),
-	add(X, RY, Res).*/
-
 sub_bis([], [], [], 0).
-%sub_bis([], [], [1], 1).
-sub_bis([], [Bit2|R2], [Res | Result], CarryIn):-
+sub_bis([], [Bit2|R2], [Res|Result], CarryIn):-
 	sub_bit(0, Bit2, CarryIn, Res, CarryOut),
 	sub_bis([], R2, Result, CarryOut).
-sub_bis([Bit1|R1], [], [Res | Result], CarryIn):-
+sub_bis([Bit1|R1], [], [Res|Result], CarryIn):-
 	sub_bit(Bit1, 0, CarryIn, Res, CarryOut),
 	sub_bis(R1, [], Result, CarryOut).
 sub_bis([Bit1|R1], [Bit2|R2], [Res | Result], CarryIn):-
@@ -68,7 +80,6 @@ sub_bis([Bit1|R1], [Bit2|R2], [Res | Result], CarryIn):-
 	sub_bis(R1, R2, Result, CarryOut).
 sub(R1, R2, Res):-
 	sub_bis(R1, R2, Res, 0).
-
 
 /**
  * Question 7
@@ -114,10 +125,23 @@ factorial_is(X, Res):-
 /**
  * Tests
  */
-/*
-
-add([1], [0, 0, 1, 1], Sum). % Sum = [0,0,1,1]
+add([1], [0, 0, 1, 1], Sum). % Sum = [0, 0, 1, 1]
 add([1, 0, 0, 0], [0, 0, 1, 1], [1, 0, 1, 1]). % Yes
 add([1, 0, 0, 0], [0, 0, 1, 1], Sum). % Sum = [1, 0, 1, 1]
 
-*/
+sub([1, 1], [1, 0], Sub). % Sub = [0, 1]
+sub([1, 1, 0, 1], [1, 0, 0, 1], Sub). % Sub = [0, 1, 0, 0]
+sub([1, 1, 0, 1], [1, 0, 0, 1], [0, 1, 0, 0]). % Yes
+
+prod([1, 1, 0, 1], [1, 0, 0, 1], Mul). % Mul = [1, 1, 0, 0, 0, 1, 1]
+prod([], [1, 1], Mul). % Mul = []
+prod([0, 1, 0, 1], [1, 1], Mul). % Mul = [0, 1, 1, 1, 1]
+
+int2bin(5, IntBin), factorial(IntBin, OutBin), bin2int(OutBin, Fact).
+% Fact = 120
+% IntBin = [1, 0, 1]
+% OutBin = [0, 0, 0, 1, 1, 1, 1]
+int2bin(10, IntBin), factorial(IntBin, OutBin), bin2int(OutBin, Fact).
+% Fact = 3628800
+% IntBin = [0, 1, 0, 1]
+% OutBin = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1]
