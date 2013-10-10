@@ -211,6 +211,7 @@ diff_ensem([X|R], Y, Z, Acc):-
 
 /**
  * Tests
+ **
 membre(2, [1,2,3,4]). % Yes
 membre(5, [1,2,3,4]). % No
 
