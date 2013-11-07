@@ -140,7 +140,7 @@ trier([X|R], Y, Acc):-
 inclus([], Y).
 inclus([X|R], Y):-
 	membre(X, Y),
-	inclus(R, Y).	
+	inclus(R, Y).
 
 /**
  * non_inclus(+X, +Y)
