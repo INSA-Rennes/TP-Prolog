@@ -134,15 +134,79 @@ totalPieces(uplet(Fourn, NB)):-
 % SECTION 3 : Au delà de l’algèbre relationnelle
 % ============================================================================= 
 
-composants(Composant, Composant):-
-	piece(_, Composant, _),
-	!.
-composants(Composant, ComposeDe):-
+%Q1
+
+composant(Composant, ComposeDe):-
+	assemblage(Composant, ComposeDe, _).
+
+composant(Composant, ComposeDe):-
 	assemblage(Composant, SousComposant, _),
-	composants(SousComposant, ComposeDe).
-composants(Composant, ComposeDe):-
-	assemblage(Composant, ComposeDe, _),
+	composant(SousComposant, ComposeDe).
+
+
+% Q2
+
+nbExemplaires(Composant, Piece, N):-
+	assemblage(Composant, Piece, N).
+
+nbExemplaires(Composant, Piece, N):-
+	assemblage(Composant, ComposantInter, M),
+	nbExemplaires(ComposantInter, Piece, P),
+	N is M*P.
+
+estPieceCut(P):-
+	piece(_, P, _),
 	!.
+
+piecesTotal(Composant, composant(R,N)):-
+	composant(Composant, R),
+	estPieceCut(R),
+	nbExemplaires(Composant, R, N).
+
+
+%Q3
+sumQuantProd([], 0).
+
+sumQuantProd([Prod|R], NB):-
+	nbComposantFourni(Prod, Nombre),
+	sumQuantProd(R, NbR),
+	NB is NbR+Nombre.
+
+nbComposantFourniNom(Nom, NB):-
+	findall(CodeComp, piece(CodeComp, Nom, _), Prods),
+	sumQuantProd(Prods, NB).
+
+nbComposantFourni(CodeComp, NB):-
+	findall(Quantite, livraison(_, CodeComp, Quantite), Quantites),
+	sumQuantites(Quantites, NB).
+
+ratioComposant([], []).
+
+ratioComposant([composant(NomComp,N)|Compo], [Rat1|Rest]):-
+	nbComposantFourniNom(NomComp, T),
+	Rat1 is T/N,
+	ratioComposant(Compo, Rest).
+
+minBis([], Min, Min).
+
+minBis([P|R], Min, Res):-
+	P < Min,
+	!,
+	minBis(R, P, Res).
+
+minBis([P|R], Min, Res):-
+	minBis(R, Min, Res).
+
+minL([P|R], N):-
+	minBis(R, P, N).
+
+nbVoit(NB):-
+	findall(composant(Comp,N), piecesTotal(voiture, composant(Comp, N)), Composants),
+	ratioComposant(Composants, Ratios),
+	minL(Ratios, NBfloat),
+	NB is truncate(NBfloat).
+
+
 
 
 
