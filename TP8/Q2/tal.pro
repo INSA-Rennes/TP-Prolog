@@ -39,31 +39,30 @@ adjectif(petit).
  Définition des prédicats
 ===============================================================================
 */
-/**
- * Les propositions subordonnees relatives ont ete sorties du groupe nominal pour simplifier le code.
- */
-phrase_simple(List, Rest):-
-	gn(List, Rest1),
-	prop_relative(Rest1, Rest2),
-	gv(Rest2, Rest).
 phrase_simple(List, Rest):-
 	gn(List, Rest1),
 	gv(Rest1, Rest).
 
-gn([Elem|List], List):-
+gn(List, Rest):-
+	gn_simple(List, Rest).
+gn(List, Rest):-
+	gn_simple(List, Rest1),
+	prop_relative(Rest1, Rest).
+
+gn_simple([Elem|List], List):-
 	nom_propre(Elem).
-gn([First, Second|List], List):-
+gn_simple([First, Second|List], List):-
 	article(First),
 	nom_commun(Second).
-gn([First, Second, Third|List], List):-
+gn_simple([First, Second, Third|List], List):-
 	article(First),
 	nom_commun(Second),
 	adjectif(Third).
-gn([First, Second, Third|List], List):-
+gn_simple([First, Second, Third|List], List):-
 	article(First),
 	adjectif(Second),
 	nom_commun(Third).
-gn([First, Second, Third, Fourth|List], List):-
+gn_simple([First, Second, Third, Fourth|List], List):-
 	article(First),
 	adjectif(Second),
 	nom_commun(Third),
@@ -90,8 +89,8 @@ prop_relative([First|List], Rest):-
 	pronom(First),
 	gv(List, Rest).
 
-analyse(List):-
-	phrase_simple(List, []).
+analyse(List, Tree):-
+	phrase_simple(List, [], Tree).
 
 /*
 ===============================================================================
@@ -104,12 +103,14 @@ analyse(List):-
 % n'hésitez pas à en définir d'autres
 
 /*
-analyse([le, chien, aboie]).
-analyse([les, enfants, jouent]).
-analyse([paul, marche, dans, la, rue]).
-analyse([la, femme, qui, porte, un, pull, noir, mange, un, steack]).
-analyse([les, chien, aboie]).
-analyse([la, femme, qui, porte, un, pull, noir, mange, un, chien]).
-analyse([la, petit, chien, noir, qui, dort, mange]).
-analyse(Sentence).
+analyse([le, chien, aboie], Tree).
+analyse([les, enfants, jouent], Tree).
+analyse([paul, marche, dans, la, rue], Tree).
+analyse([la, femme, qui, porte, un, pull, noir, mange, un, steack], Tree).
+	Tree = phr(gn(nom_prop(paul), rel(pronom(qui), gv(verbe(porte), 
+				gn(art(un), nom_com(pull), adj(noir))))), gv(verbe(mange), 
+				gn(art(un), nom_com(steack))))
+analyse([les, chien, aboie], Tree).
+analyse([la, femme, qui, porte, un, pull, noir, mange, un, chien], Tree).
+analyse([la, petit, chien, noir, qui, dort, mange], Tree).
 */

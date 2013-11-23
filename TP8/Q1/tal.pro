@@ -44,26 +44,28 @@ adjectif(petit).
  */
 phrase_simple(List, Rest):-
 	gn(List, Rest1),
-	prop_relative(Rest1, Rest2),
-	gv(Rest2, Rest).
-phrase_simple(List, Rest):-
-	gn(List, Rest1),
 	gv(Rest1, Rest).
 
-gn([Elem|List], List):-
+gn(List, Rest):-
+	gn_simple(List, Rest).
+gn(List, Rest):-
+	gn_simple(List, Rest1),
+	prop_relative(Rest1, Rest).
+
+gn_simple([Elem|List], List):-
 	nom_propre(Elem).
-gn([First, Second|List], List):-
+gn_simple([First, Second|List], List):-
 	article(First),
 	nom_commun(Second).
-gn([First, Second, Third|List], List):-
+gn_simple([First, Second, Third|List], List):-
 	article(First),
 	nom_commun(Second),
 	adjectif(Third).
-gn([First, Second, Third|List], List):-
+gn_simple([First, Second, Third|List], List):-
 	article(First),
 	adjectif(Second),
 	nom_commun(Third).
-gn([First, Second, Third, Fourth|List], List):-
+gn_simple([First, Second, Third, Fourth|List], List):-
 	article(First),
 	adjectif(Second),
 	nom_commun(Third),
