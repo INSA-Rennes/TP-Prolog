@@ -39,55 +39,55 @@ adjectif(petit).
  Définition des prédicats
 ===============================================================================
 */
-phrase_simple(List, Rest):-
-	gn(List, Rest1),
-	gv(Rest1, Rest).
+phrase_simple(List, Rest, phr(GnTree, GvTree)):-
+	gn(List, Rest1, GnTree),
+	gv(Rest1, Rest, GvTree).
 
-gn(List, Rest):-
-	gn_simple(List, Rest).
-gn(List, Rest):-
-	gn_simple(List, Rest1),
-	prop_relative(Rest1, Rest).
+gn(List, Rest, GnTree):-
+	gn_simple(List, Rest, GnTree).
+gn(List, Rest, gn(GnTree, PropTree)):-
+	gn_simple(List, Rest1, GnTree),
+	prop_relative(Rest1, Rest, PropTree).
 
-gn_simple([Elem|List], List):-
-	nom_propre(Elem).
-gn_simple([First, Second|List], List):-
+gn_simple([First|List], List, gn(nom_propre(First))):-
+	nom_propre(First).
+gn_simple([First, Second|List], List, gn(art(First), nom_com(Second))):-
 	article(First),
 	nom_commun(Second).
-gn_simple([First, Second, Third|List], List):-
+gn_simple([First, Second, Third|List], List, gn(art(First), nom_com(Second), adj(Third))):-
 	article(First),
 	nom_commun(Second),
 	adjectif(Third).
-gn_simple([First, Second, Third|List], List):-
+gn_simple([First, Second, Third|List], List, gn(art(First), adj(Second), nom_com(Third))):-
 	article(First),
 	adjectif(Second),
 	nom_commun(Third).
-gn_simple([First, Second, Third, Fourth|List], List):-
+gn_simple([First, Second, Third, Fourth|List], List, gn(art(First), adj(Second), nom_com(Third), adj(Fourth))):-
 	article(First),
 	adjectif(Second),
 	nom_commun(Third),
 	adjectif(Fourth).
 
-gv([Elem|List], List):-
-	verbe(Elem).
-gv([First|List], Rest):-
+gv([First|List], List, gv(verbe(First))):-
+	verbe(First).
+gv([First|List], Rest, gv(verbe(First), GnTree)):-
 	verbe(First),
-	gn(List, Rest).
-gv([First|List], Rest):-
+	gn(List, Rest, GnTree).
+gv([First|List], Rest, gv(verbe(First), GnTree, GpTree)):-
 	verbe(First),
-	gn(List, Rest1),
-	gp(Rest1, Rest).
-gv([First|List], Rest):-
+	gn(List, Rest1, GnTree),
+	gp(Rest1, Rest, GpTree).
+gv([First|List], Rest, gv(verbe(First), GpTree)):-
 	verbe(First),
-	gp(List, Rest).
+	gp(List, Rest, GpTree).
 
-gp([First|List], Rest):-
+gp([First|List], Rest, gp_prep(prep(First), GnTree)):-
 	preposition(First),
-	gn(List, Rest).
+	gn(List, Rest, GnTree).
 
-prop_relative([First|List], Rest):-
+prop_relative([First|List], Rest, rel(pronom(First), GvTree)):-
 	pronom(First),
-	gv(List, Rest).
+	gv(List, Rest, GvTree).
 
 analyse(List, Tree):-
 	phrase_simple(List, [], Tree).
@@ -97,20 +97,20 @@ analyse(List, Tree):-
 ===============================================================================
  Tests
 ===============================================================================
-*/
 
-% Quelques phrases de test à copier coller pour vous faire gagner du temps, mais
-% n'hésitez pas à en définir d'autres
+Les arbres ne sont pas identiques a l'enonce.
+Les groupes nominaux contenant des propositions subordonees relatives ont ete modifies afin de simplifier le code.
+
+*/
 
 /*
 analyse([le, chien, aboie], Tree).
-analyse([les, enfants, jouent], Tree).
-analyse([paul, marche, dans, la, rue], Tree).
-analyse([la, femme, qui, porte, un, pull, noir, mange, un, steack], Tree).
+	Tree = phr(gn(art(le), nom_com(chien)), gv(verbe(aboie)))
+analyse([paul, qui, porte, un, pull, noir, mange, un, steack], Tree).
 	Tree = phr(gn(nom_prop(paul), rel(pronom(qui), gv(verbe(porte), 
 				gn(art(un), nom_com(pull), adj(noir))))), gv(verbe(mange), 
 				gn(art(un), nom_com(steack))))
-analyse([les, chien, aboie], Tree).
-analyse([la, femme, qui, porte, un, pull, noir, mange, un, chien], Tree).
 analyse([la, petit, chien, noir, qui, dort, mange], Tree).
+	Tree = phr(gn(gn(art(la), adj(petit), nom_com(chien), adj(noir)), 
+				rel(pronom(qui), gv(verbe(dort)))), gv(verbe(mange)))
 */
