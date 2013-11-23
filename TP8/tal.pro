@@ -22,6 +22,7 @@ verbe(jouent).
 verbe(marche).
 verbe(porte).
 verbe(mange).
+verbe(dort).
 
 nom_propre(paul).
 
@@ -30,6 +31,7 @@ preposition(dans).
 pronom(qui).
 
 adjectif(noir).
+adjectif(petit).
 
 /*
 ===============================================================================
@@ -37,7 +39,13 @@ adjectif(noir).
  Définition des prédicats
 ===============================================================================
 */
-
+/**
+ * Les propositions subordonnees relatives ont ete sorties du groupe nominal pour simplifier le code.
+ */
+phrase_simple(List, Rest):-
+	gn(List, Rest1),
+	prop_relative(Rest1, Rest2),
+	gv(Rest2, Rest).
 phrase_simple(List, Rest):-
 	gn(List, Rest1),
 	gv(Rest1, Rest).
@@ -47,17 +55,19 @@ gn([Elem|List], List):-
 gn([First, Second|List], List):-
 	article(First),
 	nom_commun(Second).
-gn([First, Second, Third, List], List):-
-	article(First),
-	nom_commun(Second),
-	adjectif(Third).
-gn([First, Second|List], List):-
-	nom_propre(First),
-	relatif(Second).
 gn([First, Second, Third|List], List):-
 	article(First),
 	nom_commun(Second),
-	relatif(Third).
+	adjectif(Third).
+gn([First, Second, Third|List], List):-
+	article(First),
+	adjectif(Second),
+	nom_commun(Third).
+gn([First, Second, Third, Fourth|List], List):-
+	article(First),
+	adjectif(Second),
+	nom_commun(Third),
+	adjectif(Fourth).
 
 gv([Elem|List], List):-
 	verbe(Elem).
@@ -66,13 +76,17 @@ gv([First|List], Rest):-
 	gn(List, Rest).
 gv([First|List], Rest):-
 	verbe(First),
+	gn(List, Rest1),
+	gp(Rest1, Rest).
+gv([First|List], Rest):-
+	verbe(First),
 	gp(List, Rest).
 
 gp([First|List], Rest):-
 	preposition(First),
 	gn(List, Rest).
 
-relatif([First|List], Rest):-
+prop_relative([First|List], Rest):-
 	pronom(First),
 	gv(List, Rest).
 
@@ -96,4 +110,5 @@ analyse([paul, marche, dans, la, rue]).
 analyse([la, femme, qui, porte, un, pull, noir, mange, un, steack]).
 analyse([les, chien, aboie]).
 analyse([la, femme, qui, porte, un, pull, noir, mange, un, chien]).
+analyse([la, petit, chien, noir, qui, dort, mange]).
 */
