@@ -111,4 +111,5 @@ analyse([la, femme, qui, porte, un, pull, noir, mange, un, steack]).
 analyse([les, chien, aboie]).
 analyse([la, femme, qui, porte, un, pull, noir, mange, un, chien]).
 analyse([la, petit, chien, noir, qui, dort, mange]).
+analyse(Sentence).
 */
