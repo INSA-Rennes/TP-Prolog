@@ -69,7 +69,7 @@ livraison(f4, p1, 300).
 
 
 % ============================================================================= 
-% SECTION 2 : Opération relationnelles
+% SECTION 2 : Operation relationnelles
 % ============================================================================= 
 
 %fromcity(+City, -piece(NumPiece, Nom, City))
@@ -142,7 +142,7 @@ totalPieces(uplet(Fourn, NB)):-
 
 
 % ============================================================================= 
-% SECTION 3 : Au delà de l’algèbre relationnelle
+% SECTION 3 : Au dela de l algebre relationnelle
 % ============================================================================= 
 
 %Q1
