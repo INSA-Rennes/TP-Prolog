@@ -5,36 +5,38 @@ TP 8 Traitement Automatique de la Langue (TAL) - Prolog
 @version Annee scolaire 2013/2014
 */
 
-article(le).
-article(un).
-article_fem(la).
-article_plu(les).
+article(m, s, le).
+article(m, s, un).
+article(f, s, la).
+article(_, p, les).
 
-nom_commun(chien).
-nom_commun(steack).
-nom_commun(pull).
-nom_commun_fem(rue).
-nom_commun_fem(femme).
-nom_commun_plu(enfants).
+nom_commun(m, s, chien).
+nom_commun(m, s, steack).
+nom_commun(m, s, pull).
+nom_commun(f, s, rue).
+nom_commun(f, s, femme).
+nom_commun(m, p, enfants).
 
-verbe(aboie).
-verbe(marche).
-verbe(porte).
-verbe(mange).
-verbe(dort).
-verbe_plu(jouent).
-verbe_plu(dorment).
+verbe(s, aboie).
+verbe(s, marche).
+verbe(s, porte).
+verbe(s, mange).
+verbe(p, mangent).
+verbe(s, dort).
+verbe(p, jouent).
+verbe(s, joue).
+verbe(p, dorment).
 
-nom_propre(paul).
+nom_propre(m, s, paul).
 
 preposition(dans).
 
 pronom(qui).
 
-adjectif(noir).
-adjectif(petit).
-adjectif_fem(petite).
-adjectif_plu(petits).
+adjectif(m, s, noir).
+adjectif(m, s, petit).
+adjectif(f, s, petite).
+adjectif(m, p, petits).
 
 /*
 ===============================================================================
@@ -43,121 +45,54 @@ adjectif_plu(petits).
 ===============================================================================
 */
 phrase_simple(List, Rest, phr(GnTree, GvTree)):-
-	gn(List, Rest1, GnTree),
-	gv(Rest1, Rest, GvTree).
-phrase_simple(List, Rest, phr(GnTree, GvTree)):-
-	gn_plu(List, Rest1, GnTree),
-	gv_plu(Rest1, Rest, GvTree).
+	gn(Number, List, Rest1, GnTree),
+	gv(Number, Rest1, Rest, GvTree).
 
-gn(List, Rest, GnTree):-
-	gn_simple(List, Rest, GnTree).
-gn(List, Rest, gn(GnTree, PropTree)):-
-	gn_simple(List, Rest1, GnTree),
-	prop_relative(Rest1, Rest, PropTree).
+gn(Number, List, Rest, GnTree):-
+	gn_simple(Number, List, Rest, GnTree).
+gn(Number, List, Rest, gn(GnTree, PropTree)):-
+	gn_simple(Number, List, Rest1, GnTree),
+	prop_relative(Number, Rest1, Rest, PropTree).
 
-gn_plu(List, Rest, GnTree):-
-	gn_simple(List, Rest, GnTree).
-gn_plu(List, Rest, gn(GnTree, PropTree)):-
-	gn_simple_plu(List, Rest1, GnTree),
-	prop_relative_plu(Rest1, Rest, PropTree).
+gn_simple(Number, [First|List], List, gn(nom_propre(First))):-
+	nom_propre(_, Number, First).
+gn_simple(Number, [First, Second|List], List, gn(art(First), nom_com(Second))):-
+	article(Gender, Number, First),
+	nom_commun(Gender, Number, Second).
+gn_simple(Number, [First, Second, Third|List], List, gn(art(First), nom_com(Second), adj(Third))):-
+	article(Gender, Number, First),
+	nom_commun(Gender, Number, Second),
+	adjectif(Gender, Number, Third).
+gn_simple(Number, [First, Second, Third|List], List, gn(art(First), adj(Second), nom_com(Third))):-
+	article(Gender, Number, First),
+	adjectif(Gender, Number, Second),
+	nom_commun(Gender, Number, Third).
+gn_simple(Number, [First, Second, Third, Fourth|List], List, gn(art(First), adj(Second), nom_com(Third), adj(Fourth))):-
+	article(Gender, Number, First),
+	adjectif(Gender, Number, Second),
+	nom_commun(Gender, Number, Third),
+	adjectif(Gender, Number, Fourth).
 
-gn_simple([First|List], List, gn(nom_propre(First))):-
-	nom_propre(First).
-gn_simple([First, Second|List], List, gn(art(First), nom_com(Second))):-
-	((
-		article(First),
-		nom_commun(Second)
-	);(
-		article_fem(First),
-		nom_commun_fem(Second)
-	)).
-gn_simple([First, Second, Third|List], List, gn(art(First), nom_com(Second), adj(Third))):-
-	((
-		article(First),
-		nom_commun(Second),
-		adjectif(Third)
-	);(
-		article_fem(First),
-		nom_commun_fem(Second),
-		adjectif_fem(Third)
-	)).
-gn_simple([First, Second, Third|List], List, gn(art(First), adj(Second), nom_com(Third))):-
-	((
-		article(First),
-		adjectif(Second),
-		nom_commun(Third)
-	);(
-		article_fem(First),
-		adjectif_fem(Second),
-		nom_commun_fem(Third)
-	)).
-gn_simple([First, Second, Third, Fourth|List], List, gn(art(First), adj(Second), nom_com(Third), adj(Fourth))):-
-	((
-		article(First),
-		adjectif(Second),
-		nom_commun(Third),
-		adjectif(Fourth)
-	);(
-		article_fem(First),
-		adjectif_fem(Second),
-		nom_commun_fem(Third),
-		adjectif_fem(Fourth)
-	)).
-
-gn_simple_plu([First, Second|List], List, gn(art(First), nom_com(Second))):-
-	article_plu(First),
-	nom_commun_plu(Second).
-gn_simple_plu([First, Second, Third|List], List, gn(art(First), nom_com(Second), adj(Third))):-
-	article_plu(First),
-	nom_commun_plu(Second),
-	adjectif_plu(Third).
-gn_simple_plu([First, Second, Third|List], List, gn(art(First), adj(Second), nom_com(Third))):-
-	article_plu(First),
-	adjectif_plu(Second),
-	nom_commun_plu(Third).
-gn_simple_plu([First, Second, Third, Fourth|List], List, gn(art(First), adj(Second), nom_com(Third), adj(Fourth))):-
-	article_plu(First),
-	adjectif_plu(Second),
-	nom_commun_plu(Third),
-	adjectif_plu(Fourth).
-
-gv([First|List], List, gv(verbe(First))):-
-	verbe(First).
-gv([First|List], Rest, gv(verbe(First), GnTree)):-
-	verbe(First),
-	gn(List, Rest, GnTree).
-gv([First|List], Rest, gv(verbe(First), GnTree, GpTree)):-
-	verbe(First),
-	gn(List, Rest1, GnTree),
+gv(Number, [First|List], List, gv(verbe(First))):-
+	verbe(Number, First).
+gv(Number, [First|List], Rest, gv(verbe(First), GnTree)):-
+	verbe(Number, First),
+	gn(_, List, Rest, GnTree).
+gv(Number, [First|List], Rest, gv(verbe(First), GnTree, GpTree)):-
+	verbe(Number, First),
+	gn(_, List, Rest1, GnTree),
 	gp(Rest1, Rest, GpTree).
-gv([First|List], Rest, gv(verbe(First), GpTree)):-
-	verbe(First),
-	gp(List, Rest, GpTree).
-
-gv_plu([First|List], List, gv(verbe(First))):-
-	verbe_plu(First).
-gv_plu([First|List], Rest, gv(verbe(First), GnTree)):-
-	verbe_plu(First),
-	gn(List, Rest, GnTree).
-gv_plu([First|List], Rest, gv(verbe(First), GnTree, GpTree)):-
-	verbe_plu(First),
-	gn(List, Rest1, GnTree),
-	gp(Rest1, Rest, GpTree).
-gv_plu([First|List], Rest, gv(verbe(First), GpTree)):-
-	verbe_plu(First),
+gv(Number, [First|List], Rest, gv(verbe(First), GpTree)):-
+	verbe(Number, First),
 	gp(List, Rest, GpTree).
 
 gp([First|List], Rest, gp_prep(prep(First), GnTree)):-
 	preposition(First),
-	gn(List, Rest, GnTree).
+	gn(_, List, Rest, GnTree).
 
-prop_relative([First|List], Rest, rel(pronom(First), GvTree)):-
+prop_relative(Number, [First|List], Rest, rel(pronom(First), GvTree)):-
 	pronom(First),
-	gv(List, Rest, GvTree).
-
-prop_relative_plu([First|List], Rest, rel(pronom(First), GvTree)):-
-	pronom(First),
-	gv_plu(List, Rest, GvTree).
+	gv(Number, List, Rest, GvTree).
 
 analyse(List, Tree):-
 	phrase_simple(List, [], Tree).
