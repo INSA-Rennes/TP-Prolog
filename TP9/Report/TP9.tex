@@ -1,0 +1,69 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
+\definecolor{teal}{rgb}{0.0,0.5,0.5}
+\definecolor{violet}{rgb}{0.5,0,0.5}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{listings}
+\lstloadlanguages{Prolog}
+\lstdefinestyle{listing} {
+  language=Prolog,
+  captionpos=t,
+  inputencoding=latin1,
+  extendedchars=true,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  basicstyle=\footnotesize\ttfamily,
+  backgroundcolor=\color{grey},
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{teal},
+  identifierstyle=\color{black},
+  stringstyle=\color{red},
+  numberstyle=\color{violet},
+}
+\lstset{style=listing}
+
+\title{TP9 - Binômes}
+\author{\textsc{Paul Chaignon} - \textsc{Clément Gautrais}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Résolution par force brute}
+
+\subsection{Questions}
+
+\lstinputlisting[caption=tp9.pro]{tp9.pro}
+\vspace{2cm}
+
+\subsection{Tests}
+
+\lstinputlisting[caption=tp9\_tests.pro]{tp9_tests.pro}
+\vspace{3cm}
+
+
+\section{Résolution optimale}
+
+\subsection{Questions}
+
+\lstinputlisting[caption=tp9\_optional.pro]{tp9_optional.pro}
+\vspace{2cm}
+
+\subsection{Tests}
+
+\lstinputlisting[caption=tp9\_optional\_tests.pro]{tp9_optional_tests.pro}
+
+
+\end{document}
