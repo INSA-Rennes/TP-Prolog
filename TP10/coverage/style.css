@@ -1,0 +1,16 @@
+/* default style: pretty */
+	.comment {color:#B22222}
+	.normal {color:#000000}
+	.head {color:#0000FF}
+	.call {color:#00008B}
+	.builtin {color:#DA70D6}
+	.control {color:#800080}
+	.atom {color:#000000}
+	.functor {color:#000000}
+	.number {color:#000000}
+	.string {color:#BC8F8F}
+	.variable {color:#B8860B}
+	.type {color:#228B22}
+	.warning {color:#FF0000}
+	.coverage {color:#000000; font-weight:bold; background-color:#32CD32}
+	.nocoverage {color:#000000; font-weight:bold; background-color:#FF0000}

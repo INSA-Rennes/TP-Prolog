@@ -64,13 +64,13 @@ proposition2(World):-
  * Cody does not like Abby.
  */
 proposition3(World):-
-	not(member(like(cody, abby), World)).
+	not(member(likes(cody, abby), World)).
 
 /**
  * Nobody likes someone who does not like him.
  */
 proposition4(World):-
-	not(proposition4(World)).
+	not(notproposition4(World)).
 notproposition4(World):-
 	member(likes(Nobody, Someone), World),
 	not(member(likes(Someone, Nobody), World)).
@@ -105,36 +105,44 @@ notproposition7(World):-
 
 
 /**
+ * propositions(+World)
+ */
+propositions(World):-
+	proposition1(World),
+	proposition2(World),
+	proposition3(World),
+	proposition4(World),
+	proposition5(World),
+	proposition6(World),
+	proposition7(World).
+
+
+/**
  * Question 1.4
  * possible_worlds(-Worlds)
  */
-possible_worlds(PossibleWorlds):-
+possible_worlds(World):-
 	people(People),
 	make_all_pairs(People, Pairs),
-	findall(World, sub_list(Pairs, World), PossibleWorlds),
-	possible_worlds(Worlds, PossibleWorlds).
+	sub_list(Pairs, World),
+	propositions(World).
 
 /**
  * possible_worlds(+Pairs, -PossibleWorld)
  */
+/*possible_worlds([], []).
 possible_worlds([World|Worlds], [World|PossibleWorlds]):-
 	propositions(World),
 	possible_worlds(Worlds, PossibleWorlds).
 possible_worlds([World|Worlds], PossibleWorlds):-
 	not(propositions(World)),
-	possible_worlds(Worlds, PossibleWorlds).
-
-/**
- * propositions(+World)
- */
-propositions(World):-
-	proposition1(World).
+	possible_worlds(Worlds, PossibleWorlds).*/
 
 
 /**
  * Questions 1.6 and 1.7
  */
-test_possible_worlds(_):-
+test_possible_worlds :-
     possible_worlds(World),
     writeln(World),
     fail.

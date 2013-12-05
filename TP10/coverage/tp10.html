@@ -1,0 +1,152 @@
+<html><head><title>tp10.pro</title>
+	    <link type="text/css" rel="stylesheet" href="style.css"> </head><body><h1>File: tp10.pro
+</h1><HR>
+<pre><span class="comment">/**
+ * TP10 Prolog
+ * @author Paul CHAIGNON
+ * @author Clément GAUTRAIS
+ * @version Annee scolaire 2013/2014
+ */
+
+</span><a name="people-1"></a><span class="head">people</span>([<span class="atom">abby</span>, <span class="atom">bess</span>, <span class="atom">cody</span>, <span class="atom">dana</span>])<span class="coverage"> 21 </span>.<span class="comment">
+
+
+/**
+ * Question 1.1
+ * make_all_pairs(+Members, -Pairs)
+ */
+</span><a name="make_all_pairs-2"></a><span class="head">make_all_pairs</span>(<span class="head">[]</span>, <span class="head">[]</span>)<span class="coverage"> 1 </span>.<span class="comment">
+</span><span class="head">make_all_pairs</span>([<span class="variable">First</span>|<span class="variable">Members</span>], [<span class="functor">likes</span>(<span class="variable">First</span>, <span class="variable">First</span>)|<span class="variable">Pairs</span>]) <span class="control">:-</span>
+        <span class="coverage"> 4 </span><a class="call" href="#make_pairs-3">make_pairs</a>(<span class="variable">First</span>, <span class="variable">Members</span>, <span class="variable">Pairs1</span>),
+        <span class="coverage"> 4 </span><a class="call" href="#make_all_pairs-2">make_all_pairs</a>(<span class="variable">Members</span>, <span class="variable">Pairs2</span>),
+        <span class="coverage"> 4 </span><a class="call" href="#concat-3">concat</a>(<span class="variable">Pairs1</span>, <span class="variable">Pairs2</span>, <span class="variable">Pairs</span>)<span class="coverage"> 4 </span>.<span class="comment">
+
+/**
+ * make_pairs(+Member, +Members, -Pairs)
+ */
+</span><a name="make_pairs-3"></a><span class="head">make_pairs</span>(<span class="variable">Member</span>, <span class="head">[]</span>, <span class="head">[]</span>)<span class="coverage"> 4 </span>.<span class="comment">
+</span><span class="head">make_pairs</span>(<span class="variable">Member</span>, [<span class="variable">First</span>|<span class="variable">Members</span>], [<span class="functor">likes</span>(<span class="variable">First</span>, <span class="variable">Member</span>), <span class="functor">likes</span>(<span class="variable">Member</span>, <span class="variable">First</span>)|<span class="variable">Pairs</span>]) <span class="control">:-</span>
+        <span class="coverage"> 6 </span><a class="call" href="#make_pairs-3">make_pairs</a>(<span class="variable">Member</span>, <span class="variable">Members</span>, <span class="variable">Pairs</span>)<span class="coverage"> 6 </span>.<span class="comment">
+
+/**
+ * concat(+X, +Y, ?T)
+ */
+</span><a name="concat-3"></a><span class="head">concat</span>(<span class="head">[]</span>, <span class="variable">Y</span>, <span class="variable">Y</span>)<span class="coverage"> 4 </span>.<span class="comment">
+</span><span class="head">concat</span>([<span class="variable">P</span>|<span class="variable">R</span>], <span class="variable">Y</span>, [<span class="variable">P</span>|<span class="variable">T</span>]) <span class="control">:-</span>
+        <span class="coverage"> 12 </span><a class="call" href="#concat-3">concat</a>(<span class="variable">R</span>, <span class="variable">Y</span>, <span class="variable">T</span>)<span class="coverage"> 12 </span>.<span class="comment">
+
+
+/**
+ * Question 1.2
+ * sub_list(+List, -SubList)
+ */
+</span><a name="sub_list-2"></a><span class="head">sub_list</span>(<span class="head">[]</span>, <span class="head">[]</span>)<span class="coverage"> 65536 </span>.<span class="comment">
+</span><span class="head">sub_list</span>([<span class="variable">First</span>|<span class="variable">List</span>], [<span class="variable">First</span>|<span class="variable">SubList</span>]) <span class="control">:-</span>
+        <span class="coverage"> 65535 </span><a class="call" href="#sub_list-2">sub_list</a>(<span class="variable">List</span>, <span class="variable">SubList</span>)<span class="coverage"> 524288 </span>.<span class="comment">
+</span><span class="head">sub_list</span>([<span class="variable">First</span>|<span class="variable">List</span>], <span class="variable">SubList</span>) <span class="control">:-</span>
+        <span class="coverage"> 65535 </span><a class="call" href="#sub_list-2">sub_list</a>(<span class="variable">List</span>, <span class="variable">SubList</span>)<span class="coverage"> 524288 </span>.<span class="comment">
+
+
+/**
+ * Question 1.3
+ * propositionI(+World)
+ */
+/**
+ * Dana likes Cody.
+ */
+</span><a name="proposition1-1"></a><span class="head">proposition1</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 65536 </span><a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="atom">dana</span>, <span class="atom">cody</span>), <span class="variable">World</span>)<span class="coverage"> 32768 </span>.<span class="comment">
+
+/**
+ * Bess does not like Dana.
+ */
+</span><a name="proposition2-1"></a><span class="head">proposition2</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 32768 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="atom">bess</span>, <span class="atom">dana</span>), <span class="variable">World</span>)<span class="coverage"> 16384 </span><span class="coverage"> 16384 </span>.<span class="comment">
+
+/**
+ * Cody does not like Abby.
+ */
+</span><a name="proposition3-1"></a><span class="head">proposition3</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 16384 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="atom">cody</span>, <span class="atom">abby</span>), <span class="variable">World</span>)<span class="coverage"> 8192 </span><span class="coverage"> 8192 </span>.<span class="comment">
+
+/**
+ * Nobody likes someone who does not like him.
+ */
+</span><a name="proposition4-1"></a><span class="head">proposition4</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 8192 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="call" href="#notproposition4-1">notproposition4</a>(<span class="variable">World</span>)<span class="coverage"> 8064 </span><span class="coverage"> 128 </span>.<span class="comment">
+</span><a name="notproposition4-1"></a><span class="head">notproposition4</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 8192 </span><a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="variable">Nobody</span>, <span class="variable">Someone</span>), <span class="variable">World</span>),
+        <span class="coverage"> 18752 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="variable">Someone</span>, <span class="variable">Nobody</span>), <span class="variable">World</span>)<span class="coverage"> 10688 </span><span class="coverage"> 8064 </span>.<span class="comment">
+
+/**
+ * Abby likes everyone who likes Bess.
+ */
+</span><a name="proposition5-1"></a><span class="head">proposition5</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 128 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="call" href="#notproposition5-1">notproposition5</a>(<span class="variable">World</span>)<span class="coverage"> 96 </span><span class="coverage"> 32 </span>.<span class="comment">
+</span><a name="notproposition5-1"></a><span class="head">notproposition5</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 128 </span><a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="variable">X</span>, <span class="atom">bess</span>), <span class="variable">World</span>),
+        <span class="coverage"> 144 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="atom">abby</span>, <span class="variable">X</span>), <span class="variable">World</span>)<span class="coverage"> 48 </span><span class="coverage"> 96 </span>.<span class="comment">
+
+/**
+ * Dana likes everyone Bess likes.
+ */
+</span><a name="proposition6-1"></a><span class="head">proposition6</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 32 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="call" href="#notproposition6-1">notproposition6</a>(<span class="variable">World</span>)<span class="coverage"> 12 </span><span class="coverage"> 20 </span>.<span class="comment">
+</span><a name="notproposition6-1"></a><span class="head">notproposition6</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 32 </span><a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="atom">bess</span>, <span class="variable">X</span>), <span class="variable">World</span>),
+        <span class="coverage"> 20 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="atom">dana</span>, <span class="variable">X</span>), <span class="variable">World</span>)<span class="coverage"> 8 </span><span class="coverage"> 12 </span>.<span class="comment">
+
+/**
+ * Everybody likes somebody.
+ */
+</span><a name="proposition7-1"></a><span class="head">proposition7</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 20 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="call" href="#notproposition7-1">notproposition7</a>(<span class="variable">World</span>)<span class="coverage"> 16 </span><span class="coverage"> 4 </span>.<span class="comment">
+</span><a name="notproposition7-1"></a><span class="head">notproposition7</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 20 </span><a class="call" href="#people-1">people</a>(<span class="variable">People</span>),
+        <span class="coverage"> 20 </span><a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="variable">Somebody</span>, <span class="variable">People</span>),
+        <span class="coverage"> 44 </span><a class="warning" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/not-1.html">not</a> <a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/lib/lists/member-2.html">member</a>(<span class="functor">likes</span>(<span class="variable">Somebody</span>, <span class="variable">_18882</span>), <span class="variable">World</span>)<span class="coverage"> 28 </span><span class="coverage"> 16 </span>.<span class="comment">
+
+
+/**
+ * propositions(+World)
+ */
+</span><a name="propositions-1"></a><span class="head">propositions</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 65536 </span><a class="call" href="#proposition1-1">proposition1</a>(<span class="variable">World</span>),
+        <span class="coverage"> 32768 </span><a class="call" href="#proposition2-1">proposition2</a>(<span class="variable">World</span>),
+        <span class="coverage"> 16384 </span><a class="call" href="#proposition3-1">proposition3</a>(<span class="variable">World</span>),
+        <span class="coverage"> 8192 </span><a class="call" href="#proposition4-1">proposition4</a>(<span class="variable">World</span>),
+        <span class="coverage"> 128 </span><a class="call" href="#proposition5-1">proposition5</a>(<span class="variable">World</span>),
+        <span class="coverage"> 32 </span><a class="call" href="#proposition6-1">proposition6</a>(<span class="variable">World</span>),
+        <span class="coverage"> 20 </span><a class="call" href="#proposition7-1">proposition7</a>(<span class="variable">World</span>)<span class="coverage"> 4 </span>.<span class="comment">
+
+
+/**
+ * Question 1.4
+ * possible_worlds(-Worlds)
+ */
+</span><a name="possible_worlds-1"></a><span class="head">possible_worlds</span>(<span class="variable">World</span>) <span class="control">:-</span>
+        <span class="coverage"> 1 </span><a class="call" href="#people-1">people</a>(<span class="variable">People</span>),
+        <span class="coverage"> 1 </span><a class="call" href="#make_all_pairs-2">make_all_pairs</a>(<span class="variable">People</span>, <span class="variable">Pairs</span>),
+        <span class="coverage"> 1 </span><a class="call" href="#sub_list-2">sub_list</a>(<span class="variable">Pairs</span>, <span class="variable">World</span>),
+        <span class="coverage"> 65536 </span><a class="call" href="#propositions-1">propositions</a>(<span class="variable">World</span>)<span class="coverage"> 4 </span>.<span class="comment">
+
+/**
+ * possible_worlds(+Pairs, -PossibleWorld)
+ */
+/*possible_worlds([], []).
+possible_worlds([World|Worlds], [World|PossibleWorlds]):-
+	propositions(World),
+	possible_worlds(Worlds, PossibleWorlds).
+possible_worlds([World|Worlds], PossibleWorlds):-
+	not(propositions(World)),
+	possible_worlds(Worlds, PossibleWorlds).*/
+
+
+/**
+ * Questions 1.6 and 1.7
+ */
+</span><a name="test_possible_worlds-0"></a><span class="head">test_possible_worlds</span> <span class="control">:-</span>
+        <span class="coverage"> 1 </span><a class="call" href="#possible_worlds-1">possible_worlds</a>(<span class="variable">World</span>),
+        <span class="coverage"> 4 </span><a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/ioterm/writeln-1.html">writeln</a>(<span class="variable">World</span>),
+        <span class="coverage"> 4 </span><a class="builtin" href="file:///usr/local/stow/eclipse6.0_136/doc/bips/kernel/control/fail-0.html">fail</a><span class="nocoverage"> 0 </span>.</pre><HR>
+</body></html>
