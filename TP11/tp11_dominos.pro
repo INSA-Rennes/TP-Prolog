@@ -77,8 +77,8 @@ add_stone([chain([X|RestX], [FirstY|RestY])|Chains], stone(X, Y), [chain([Y, X|R
 add_stone([chain([FirstX|RestX], [Y|RestY])|Chains], stone(X, Y), [chain([FirstX|RestX], [X, Y|RestY])|Chains]).
 add_stone([chain([Y|RestX], [FirstY|RestY])|Chains], stone(X, Y), [chain([X, Y|RestX], [FirstY|RestY])|Chains]).
 add_stone([chain([FirstX|RestX], [X|RestY])|Chains], stone(X, Y), [chain([FirstX|RestX], [Y, X|RestY])|Chains]).
-add_stone([chain([X|RestX], [FirstY|RestY])|Chains], stone(X, X), [chain([X], [double]), chain([X, FirstX|RestX], [FirstY|RestY])|Chains]).
-add_stone([chain([FirstX|RestX], [Y|RestY])|Chains], stone(Y, Y), [chain([Y], [double]), chain([FirstX|RestX], [Y, FirstY|RestY])|Chains]).
+add_stone([chain([X|RestX], [FirstY|RestY])|Chains], stone(X, X), [chain([X], [double]), chain([X, X|RestX], [FirstY|RestY])|Chains]).
+add_stone([chain([FirstX|RestX], [Y|RestY])|Chains], stone(Y, Y), [chain([Y], [double]), chain([FirstX|RestX], [Y, Y|RestY])|Chains]).
 add_stone([First|Chains], Stone, [First|NewChains]):-
     add_stone(Chains, Stone, NewChains).
 
@@ -88,11 +88,19 @@ add_stone([First|Chains], Stone, [First|NewChains]):-
  */
 /*
 choose([1, 2, 3], Elt, Rest).
-    
+    Elt = 1
+    Rest = [2, 3]
+
+    Elt = 2
+    Rest = [1, 3]
+
+    Elt = 3
+    Rest = [1, 2]
+
 add_stone([chain([2], [4])], stone(2, 1), Chains).
     Chains = [chain([1, 2], [4])]
-add_stone([chain([3], [4]), chain([2], [double]))], stone(2, 1), Chains).
-    Chains = [chain([1, 2], [double]), chain([3], [4])]
+add_stone([chain([3], [4]), chain([2], [double])], stone(2, 1), Chains).
+    Chains = [chain([3], [4]), chain([1, 2], [double])]
 add_stone([chain([2], [4])], stone(2, 2), Chains).
     Chains = [chain([2, 2], [4]), chain([2], [double])]
 */
