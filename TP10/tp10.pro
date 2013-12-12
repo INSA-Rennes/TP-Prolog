@@ -7,7 +7,6 @@
 
 people([abby, bess, cody, dana]).
 
-
 /**
  * Question 1.1
  * make_all_pairs(+Members, -Pairs)
