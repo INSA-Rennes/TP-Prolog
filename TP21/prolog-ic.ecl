@@ -1,3 +1,5 @@
+:- lib(ic).
+
 voiture(rouge).
 voiture(vert(clair)).
 voiture(gris).
@@ -11,7 +13,7 @@ bateau(noir).
  * choixCouleur(?CouleurBateau, ?CouleurVoiture)
  */
 choixCouleur(CouleurBateau, CouleurVoiture):-
-	CouleurVoiture == CouleurBateau,
+	CouleurVoiture = CouleurBateau,
 	voiture(CouleurVoiture),
 	bateau(CouleurBateau).
 
@@ -26,9 +28,9 @@ maxCondensateur(20000).
  * isBetween(?Var, +Min, -Max)
  */
 isBetween(Var, Min, Max):-
-	var(Var),
+	not(free(Var)),
 	Var >= Min,
-	Var <= Max.
+	Var =< Max.
 isBetween(Var, Min, Max):-
 	free(Var),
 	isBetweenIncremental(Var, Min, Max).
@@ -39,57 +41,60 @@ isBetween(Var, Min, Max):-
 isBetweenIncremental(Min, Min, Max).
 isBetweenIncremental(Var, Min, Max):-
 	NextMin is Min + 1,
-	NextMin <= Max,
+	NextMin =< Max,
 	isBetweenIncremental(Var, NextMin, Max).
 
 /**
  * Question 1.4
- * commande(-NbResistance, -NbCondensateur)
+ * commande(-NbResistances, -NbCondensateurs)
  */
-commande(NbResistance, NbCondensateur):-
+commande(NbResistances, NbCondensateurs):-
 	minResistance(MinResistance),
 	maxResistance(MaxResistance),
 	minCondensateur(MinCondensateur),
 	maxCondensateur(MaxCondensateur),
-	isBetween(NbResistance, MinResistance, MaxResistance),
-	isBetween(NbCondensateur, MinCondensateur, MaxCondensateur),
-	NbResistance >= NbCondensateur.
+	isBetween(NbResistances, MinResistance, MaxResistance),
+	isBetween(NbCondensateurs, MinCondensateur, MaxCondensateur),
+	NbResistances > NbCondensateurs.
 
 /**
  * Question 1.7
- * commandeIC(-NbResistance, -NbCondensateur)
+ * commandeIC(-NbResistances, -NbCondensateurs)
  */
-commandeIC(NbResistance, NbCondensateur):-
+commandeIC(NbResistances, NbCondensateurs):-
 	minResistance(MinResistance),
 	maxResistance(MaxResistance),
 	minCondensateur(MinCondensateur),
 	maxCondensateur(MaxCondensateur),
-	NbResistance #:: MinResistance..MaxResistance,
-	NbCondensateur #:: MinCondensateur..MaxCondensateur,
-	NbResistance #>= NbCondensateur.
+	NbResistances #:: MinResistance..MaxResistance,
+	NbCondensateurs #:: MinCondensateur..MaxCondensateur,
+	NbResistances #> NbCondensateurs.
 
 /**
  * Question 1.8
- * commandeLabeling(-NbResistance, -NbCondensateur)
+ * commandeLabeling(-NbResistances, -NbCondensateurs)
  */
-commandeLabeling(NbResistance, NbCondensateur):-
-	commandeIC(NbResistance, NbCondensateur),
-	labeling([NbResistance, NbCondensateur]).
+commandeLabeling(NbResistances, NbCondensateurs):-
+	commandeIC(NbResistances, NbCondensateurs),
+	labeling([NbResistances, NbCondensateurs]).
 
 
 /**
  * Tests
  */
 /*
-choixCouleur(rouge, rouge).
-choixCouleur(noir, vert(clair)).
-choixCouleur(vert, vert(clair)).
+choixCouleur(blanc, blanc). => Yes
+choixCouleur(noir, vert(clair)). => No
+choixCouleur(vert, vert(clair)). => No !!!!!!!!!!!!!!!!!!!!!
+choixCouleur(CouleurBateau, CouleurVoiture). => 1 solution !!!!!!!!!!
 
-isBetween(4000000, 1000000, 8000000).
-isBetween(10000000, 1000000, 8000000).
-isBetween(X, 1, 5).
+isBetween(4000000, 1000000, 8000000). => Yes
+isBetween(10000000, 1000000, 8000000). => No
+isBetween(X, 1, 5). => 5 solutions
 
-commande(NbResistance, NbCondensateur).
-commandeIC(NbResistance, NbCondensateur).
-commandeLabeling(NbResistance, NbCondensateur).
+commande(NbResistances, NbCondensateurs).
+findall((NbResistances, NbCondensateurs), commande(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
+commandeIC(NbResistances, NbCondensateurs). => Delayed goal: #>
+commandeLabeling(NbResistances, NbCondensateurs).
+findall((NbResistances, NbCondensateurs), commandeLabeling(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
 */
