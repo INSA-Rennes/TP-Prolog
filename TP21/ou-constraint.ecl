@@ -6,17 +6,20 @@
  */
 vabs(Val, AbsVal):-
 	AbsVal #> 0,
-	Val #= AbsVal.
-vabs(Val, AbsVal):-
-	AbsVal #> 0,
-	Val #= -AbsVal.
+	(
+		Val #= AbsVal
+	;
+		Val #= -AbsVal
+	),
+	labeling([Val, AbsVal]).
 
 /**
  * vabsIC(?Val, ?AbsVal)
  */
 vabsIC(Val, AbsVal):-
 	AbsVal #> 0,
-	Val #= AbsVal or Val #= -AbsVal.
+	Val #= AbsVal or Val #= -AbsVal,
+	labeling([Val, AbsVal]).
 
 /**
  * Question 1.12
@@ -30,8 +33,7 @@ vabsIC(Val, AbsVal):-
  */
 faitListe([], 0, _, _):-!.
 faitListe([First|Rest], Taille, Min, Max):-
-	First #>= Min,
-	First #=< Max,
+	First #:: Min..Max,
 	Taille1 #= Taille - 1,
 	faitListe(Rest, Taille1, Min, Max).
 
@@ -54,8 +56,16 @@ checkRelation(Xi, Xi1, Xi2):-
 
 /**
  * Question 1.15
+ * checkPeriode(+ListVar).
  */
-
+% TODO Any better solution?
+checkPeriode(ListVar):-
+	length(ListVar, Length),
+	Length < 10.
+checkPeriode([X1, X2, X3, X4, X5, X6, X7, X8, X9, X10|Rest]):-
+	X1 =:= X10,
+	checkPeriode([X2, X3, X4, X5, X6, X7, X8, X9, X10|Rest]).
+% faitListe(ListVar, 18, -9, 9), suite(ListVar), checkPeriode(ListVar). => 99 solutions
 
 
 /**
@@ -73,8 +83,8 @@ vabsIC(-5, 5). => Yes
 vabsIC(X, 5).
 vabsIC(X, AbsX).
 
-faitListe(ListVar, 5, 1, 3).
-faitListe([_, _, _, _, _], Taille, 1, 3). => Taille = 5
+faitListe(ListVar, 5, 1, 3). => 243 solutions
+faitListe([_, _, _, _, _], Taille, 1, 3). => Taille = 5 !!!!!!!!!!!!!!!!
 
-faitListe(ListVar, 18, -9, 9), suite(ListVar).
+faitListe(ListVar, 18, -9, 9), suite(ListVar). => 99 solutions
 */

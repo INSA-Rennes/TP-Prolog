@@ -4,10 +4,11 @@
  * chapie(-Chats, -Pies, -Pattes, -Tetes)
  */
 chapie(Chats, Pies, Pattes, Tetes):-
-	Chats #>= 0,
-	Pies #>= 0,
-	Pattes #>= 0,
-	Tetes #>= 0,
+	% TODO How can I do without limitations?
+	Chats #:: 0..1000,
+	Pies #:: 0..1000,
+	Pattes #:: 0..1000,
+	Tetes #:: 0..1000,
 	Pattes #= Chats * 4 + Pies * 2,
 	Tetes #= Chats + Pies.
 
