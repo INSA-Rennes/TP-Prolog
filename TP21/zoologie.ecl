@@ -1,10 +1,21 @@
 :- lib(ic).
 
 /**
+ * chapieBug(-Chats, -Pies, -Pattes, -Tetes)
+ * chapie tourne dans le vide a partir de la seconde solution pour la question 1.10.
+ */
+chapieBug(Chats, Pies, Pattes, Tetes):-
+	Chats #:: 0..inf,
+	Pies #:: 0..inf,
+	Pattes #:: 0..inf,
+	Tetes #:: 0..inf,
+	Pattes #= Chats * 4 + Pies * 2,
+	Tetes #= Chats + Pies.
+
+/**
  * chapie(-Chats, -Pies, -Pattes, -Tetes)
  */
 chapie(Chats, Pies, Pattes, Tetes):-
-	% TODO How can I do without limitations?
 	Chats #:: 0..1000,
 	Pies #:: 0..1000,
 	Pattes #:: 0..1000,

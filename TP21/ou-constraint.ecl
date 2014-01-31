@@ -29,13 +29,22 @@ vabsIC(Val, AbsVal):-
 
 /**
  * Question 1.13
- * faitListe(?ListVar, ?Taille, +Min, +Max)
+ * faitListeBug(?ListVar, ?Taille, +Min, +Max)
+ * faitListeBug(ListVar, 2, 1, 3) tourne dans le vide a partir de la seconde solution.
+ * Avec un cut c'est faitListeBug(ListVar, _, 1, 3) qui retourne une seule solution.
  */
-faitListe([], 0, _, _):-!.
-faitListe([First|Rest], Taille, Min, Max):-
+faitListeBug([], 0, _, _).
+faitListeBug([First|Rest], Taille, Min, Max):-
 	First #:: Min..Max,
 	Taille1 #= Taille - 1,
-	faitListe(Rest, Taille1, Min, Max).
+	faitListeBug(Rest, Taille1, Min, Max).
+
+/**
+ * faitListe(?ListVar, ?Taille, +Min, +Max)
+ */
+faitListe(ListVar, Taille, Min, Max):-
+	length(ListVar, Taille),
+	ListVar #:: Min..Max.
 
 /**
  * Question 1.14
@@ -58,14 +67,7 @@ checkRelation(Xi, Xi1, Xi2):-
  * Question 1.15
  * checkPeriode(+ListVar).
  */
-% TODO Any better solution?
-checkPeriode(ListVar):-
-	length(ListVar, Length),
-	Length < 10.
-checkPeriode([X1, X2, X3, X4, X5, X6, X7, X8, X9, X10|Rest]):-
-	X1 =:= X10,
-	checkPeriode([X2, X3, X4, X5, X6, X7, X8, X9, X10|Rest]).
-% faitListe(ListVar, 18, -9, 9), suite(ListVar), checkPeriode(ListVar). => 99 solutions
+% faitListe(ListVar, 18, -9, 9), suite(ListVar), ListVar = [X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11|Rest], X1 #\= X10 or X2 #\= X11, labeling(ListVar).
 
 
 /**
@@ -84,7 +86,8 @@ vabsIC(X, 5).
 vabsIC(X, AbsX).
 
 faitListe(ListVar, 5, 1, 3). => 243 solutions
-faitListe([_, _, _, _, _], Taille, 1, 3). => Taille = 5 !!!!!!!!!!!!!!!!
+faitListe(ListVar, _, 1, 3). !!!!!!!!!!!!
+faitListe([_, _, _, _, _], Taille, 1, 3). => Taille = 5
 
 faitListe(ListVar, 18, -9, 9), suite(ListVar). => 99 solutions
 */

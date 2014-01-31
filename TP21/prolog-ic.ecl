@@ -12,10 +12,9 @@ bateau(noir).
  * Question 1.1
  * choixCouleur(?CouleurBateau, ?CouleurVoiture)
  */
-choixCouleur(CouleurBateau, CouleurVoiture):-
-	CouleurVoiture = CouleurBateau,
-	voiture(CouleurVoiture),
-	bateau(CouleurBateau).
+choixCouleur(Couleur, Couleur):-
+	voiture(Couleur),
+	bateau(Couleur).
 
 
 minResistance(5000).
@@ -94,7 +93,7 @@ isBetween(X, 1, 5). => 5 solutions
 
 commande(NbResistances, NbCondensateurs).
 findall((NbResistances, NbCondensateurs), commande(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
-commandeIC(NbResistances, NbCondensateurs). => Delayed goal: #>
+commandeIC(NbResistances, NbCondensateurs). => Delayed goal:
 commandeLabeling(NbResistances, NbCondensateurs).
 findall((NbResistances, NbCondensateurs), commandeLabeling(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
 */
