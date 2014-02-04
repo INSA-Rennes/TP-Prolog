@@ -1,0 +1,87 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
+\definecolor{teal}{rgb}{0.0,0.5,0.5}
+\definecolor{violet}{rgb}{0.5,0,0.5}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{listings}
+\lstloadlanguages{Prolog}
+\lstdefinestyle{listing} {
+  language=Prolog,
+  captionpos=t,
+  inputencoding=latin1,
+  extendedchars=true,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  basicstyle=\footnotesize\ttfamily,
+  backgroundcolor=\color{grey},
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{teal},
+  identifierstyle=\color{black},
+  stringstyle=\color{red},
+  numberstyle=\color{violet},
+}
+\lstset{style=listing}
+
+\title{TP1 - Découverte de la bibliothèque de contraintes à domaines finis}
+\author{\textsc{Paul Chaignon} - \textsc{Ulysse Goarant}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{De Prolog à Prolog+ic}
+
+% TODO Improve results.
+% TODO Remove comments to get highlighting.
+% TODO How to use constants - as it is asked - in Prolog?
+\lstinputlisting[caption=prolog-ic.ecl]{../prolog-ic.ecl}
+\vspace{2cm}
+
+\subsection*{Question 1.2}
+Pourquoi Prolog peut être considéré comme un solveur de contraintes sur le domaine des arbres ?
+
+\subsection*{Question 1.5}
+% TODO Search tree.
+
+\subsection*{Question 1.6}
+Pourquoi peut-on dire que Prolog ne comprend pas les Maths ?
+
+\subsection*{Question 1.7}
+
+
+\subsection*{Question 1.8}
+% TODO Search tree.
+
+
+\section{Zoologie}
+
+% TODO Improve results.
+% TODO Remove comments to get highlighting.
+\lstinputlisting[caption=zoologie.ecl]{../zoologie.ecl}
+\vspace{2cm}
+
+
+\section{Le OU en contraintes}
+
+% TODO Improve results.
+% TODO Remove comments to get highlighting.
+\lstinputlisting[caption=ou-constraint.ecl]{../ou-constraint.ecl}
+\vspace{2cm}
+
+\subsection*{Question 1.12}
+
+
+
+\end{document}

@@ -84,8 +84,8 @@ commandeLabeling(NbResistances, NbCondensateurs):-
 /*
 choixCouleur(blanc, blanc). => Yes
 choixCouleur(noir, vert(clair)). => No
-choixCouleur(vert, vert(clair)). => No !!!!!!!!!!!!!!!!!!!!!
-choixCouleur(CouleurBateau, CouleurVoiture). => 1 solution !!!!!!!!!!
+choixCouleur(vert, vert(clair)). => No
+choixCouleur(CouleurBateau, CouleurVoiture). => 1 solution
 
 isBetween(4000000, 1000000, 8000000). => Yes
 isBetween(10000000, 1000000, 8000000). => No
@@ -93,7 +93,7 @@ isBetween(X, 1, 5). => 5 solutions
 
 commande(NbResistances, NbCondensateurs).
 findall((NbResistances, NbCondensateurs), commande(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
-commandeIC(NbResistances, NbCondensateurs). => Delayed goal:
+commandeIC(NbResistances, NbCondensateurs). => Delayed goal.
 commandeLabeling(NbResistances, NbCondensateurs).
 findall((NbResistances, NbCondensateurs), commandeLabeling(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
 */
