@@ -48,12 +48,8 @@ isBetweenIncremental(Var, Min, Max):-
  * commande(-NbResistances, -NbCondensateurs)
  */
 commande(NbResistances, NbCondensateurs):-
-	minResistance(MinResistance),
-	maxResistance(MaxResistance),
-	minCondensateur(MinCondensateur),
-	maxCondensateur(MaxCondensateur),
-	isBetween(NbResistances, MinResistance, MaxResistance),
-	isBetween(NbCondensateurs, MinCondensateur, MaxCondensateur),
+	isBetween(NbResistances, 5000, 10000),
+	isBetween(NbCondensateurs, 9000, 20000),
 	NbResistances > NbCondensateurs.
 
 /**
@@ -61,12 +57,8 @@ commande(NbResistances, NbCondensateurs):-
  * commandeIC(-NbResistances, -NbCondensateurs)
  */
 commandeIC(NbResistances, NbCondensateurs):-
-	minResistance(MinResistance),
-	maxResistance(MaxResistance),
-	minCondensateur(MinCondensateur),
-	maxCondensateur(MaxCondensateur),
-	NbResistances #:: MinResistance..MaxResistance,
-	NbCondensateurs #:: MinCondensateur..MaxCondensateur,
+	NbResistances #:: 5000..10000,
+	NbCondensateurs #:: 9000..20000,
 	NbResistances #> NbCondensateurs.
 
 /**
@@ -80,20 +72,30 @@ commandeLabeling(NbResistances, NbCondensateurs):-
 
 /**
  * Tests
- */
-/*
+ *//*
 choixCouleur(blanc, blanc). => Yes
 choixCouleur(noir, vert(clair)). => No
 choixCouleur(vert, vert(clair)). => No
-choixCouleur(CouleurBateau, CouleurVoiture). => 1 solution
+choixCouleur(CouleurBateau, CouleurVoiture).
+	CouleurBateau = blanc
+	CouleurVoiture = blanc
+	Yes (0.00s cpu)
 
 isBetween(4000000, 1000000, 8000000). => Yes
 isBetween(10000000, 1000000, 8000000). => No
-isBetween(X, 1, 5). => 5 solutions
+isBetween(X, 1, 3).
+	X = 1
+	Yes (0.00s cpu, solution 1, maybe more)
+	X = 2
+	Yes (0.00s cpu, solution 2, maybe more)
+	X = 3
+	Yes (0.00s cpu, solution 3, maybe more)
+	No (0.00s cpu)
 
-commande(NbResistances, NbCondensateurs).
 findall((NbResistances, NbCondensateurs), commande(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
-commandeIC(NbResistances, NbCondensateurs). => Delayed goal.
-commandeLabeling(NbResistances, NbCondensateurs).
-findall((NbResistances, NbCondensateurs), commandeLabeling(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500
-*/
+commandeIC(NbResistances, NbCondensateurs).
+	NbResistances = NbResistances{9001 .. 10000}
+	NbCondensateurs = NbCondensateurs{9000 .. 9999}
+	Delayed goals:
+		-(NbCondensateurs{9000 .. 9999}) + NbResistances{9001 .. 10000} #> 0
+findall((NbResistances, NbCondensateurs), commandeLabeling(NbResistances, NbCondensateurs), Results), length(Results, NbResults). => 500500*/
