@@ -1,4 +1,7 @@
 :- lib(ic).
+:- lib(ic_symbolic).
+
+:- local domain(machines(m1, m2)).
 
 /**
  * Question 3.1
@@ -22,17 +25,23 @@ taches(Taches):-
  * Question 3.2
  * 
  */
-
+affiche(Taches):-
+	(foreachelem(Tache, Taches)
+	do
+		writeln(Tache)
+	).
 
 /**
  * Question 3.3
  * domaines(+Taches, ?Fin)
  */
 domaines(Taches, Fin):-
-	(foreach(tache(_, _, _, Debut), Taches),
+	(foreachelem(tache(Duree, _, Machine, Debut), Taches),
 	param(Fin)
 	do
-		Debut #:: 0..Fin
+		Machine &:: machines,
+		Debut #>= 0,
+		Debut #=< Fin - Duree
 	).
 
 /**
@@ -40,36 +49,38 @@ domaines(Taches, Fin):-
  * getVarList(+taches, ?Fin, ?List)
  */
 getVarList(Taches, Fin, [Fin|List]):-
-	(foreach(tache(Duree, Precedences, Machine, Debut), Taches),
+	(foreachelem(tache(_, _, _, Debut), Taches),
 	fromto([], In, Out, List)
 	do
-		Out = [Duree, Precedences, Machine, Debut|In]
+		Out = [Debut|In]
 	).
 
 /**
  * Question 3.5
- * solve(?Taches, ?Fin)
+ * solve(?Fin)
  */
-solve(Taches, Fin):-
+solve(Fin):-
 	taches(Taches),
 	domaines(Taches, Fin),
-	%precedences(Taches),
-	%conflits(Taches),
+	precedences(Taches),
+	conflits(Taches),
 	getVarList(Taches, Fin, List),
-	labeling(List).
+	labeling(List),
+	affiche(Taches).
 
 /**
  * Question 3.6
  * precedences(+Taches)
  */
 precedences(Taches):-
-	(foreach(tache(_, Precedences, _, Debut), Taches),
+	(foreachelem(tache(_, Precedences, _, Debut), Taches),
 	param(Taches)
 	do
 		(foreach(Precedence, Precedences),
 		param(Debut), param(Taches)
 		do
-			Debut #>= Taches[Precedence]
+			tache(DureePred, _, _, DebutPred) is Taches[Precedence],
+			Debut #>= DebutPred + DureePred
 		)
 	).
 
@@ -78,12 +89,19 @@ precedences(Taches):-
  * conflits(+Taches)
  */
 conflits(Taches):-
-	(foreach(tache(Duree1, _, Machine1, Debut1), Taches),
-	param(Taches), param(Machine1)
+	(for(I, 1, 12),
+	param(Taches)
 	do
-		(foreach(tache(Duree2, _, Machine2, Debut2), Taches),
-		param(Duree1), param(Debut1), param(Machine1)
+		(for(J, I+1, 12),
+		param(Taches), param(I)
 		do
-			(Machine1 == Machine2) => (Debut2#>=Debut1+Duree1 or Debut2#<=Debut1-Duree2)
+			tache(Duree1, _, Machine1, Debut1) is Taches[I],
+			tache(Duree2, _, Machine2, Debut2) is Taches[J],
+			(Machine1 &= Machine2) => (Debut2#>=Debut1+Duree1 or Debut2#=<Debut1-Duree2)
 		)
 	).
+
+/**
+ * Question 3.8
+ */
+%Fin #< 43, solve(Taches, Fin).
