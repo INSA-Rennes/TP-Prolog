@@ -1,7 +1,6 @@
 :- lib(ic_symbolic).
 :- lib(ic).
 
-
 /**
  * Question 2.1
  */
@@ -77,9 +76,9 @@ labeling_symbolic([Var|Liste]):-
 
 /**
  * Question 2.6 & 2.7
- * resoudre(?Rue)
+ * resoudre
  */
-resoudre(Rue):-
+resoudre:-
 	rue(Rue),
 
 	(foreach(m(Pays, Couleur, Boisson, Voiture, Animal, Numero), Rue)
@@ -111,9 +110,11 @@ resoudre(Rue):-
 	),
 
 	getVarList(Rue, Liste),
-	labeling_symbolic(Liste).
+	labeling_symbolic(Liste),
+
+	ecrit_maisons(Rue).
 
 /**
  * Question 2.8
  */
-
+resoudre.
