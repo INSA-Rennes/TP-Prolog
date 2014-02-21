@@ -52,7 +52,8 @@ solve(T):-
 /**
  * Question 4.5
  * pasMemeBateaux(+T, +NbEquipes, +NbConf)
- * Pas deux fois la meme valeur sur une ligne.
+ * Verifie qu'une equipe ne concours pas deux fois avec le meme bateau.
+ * Il faut donc qu'il n'y ait pas deux fois la meme valeur sur une ligne.
  */
 pasMemeBateaux(T, NbEquipes, NbConf):-
 	(for(K, 1, NbEquipes), param(T, NbConf) do
@@ -65,6 +66,7 @@ pasMemeBateaux(T, NbEquipes, NbConf):-
 
 /**
  * Question 4.6
+ * Verifie qu'une equipe ne se retrouve pas partenaires deux fois avec la meme equipe.
  * pasMemePartenaires(+T, +NbEquipes, +NbConf)
  * T[i][k] == T[j][k] => T[i][x] != T[j][x] pour tout x \ x != k.
  */
@@ -82,6 +84,7 @@ pasMemePartenaires(T, NbEquipes, NbConf):-
 /**
  * Question 4.7
  * capaBateaux(+T, +TailleEquipes, +NbEquipes, +CapaBateaux, +NbBateaux, +NbConf)
+ * Verifie que les capacites des bateaux sont respectees.
  */
 capaBateaux(T, TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, NbConf):-
 	(for(Conf, 1, NbConf), param(T, CapaBateaux, TailleEquipes, NbBateaux, NbEquipes) do
@@ -97,16 +100,20 @@ capaBateaux(T, TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, NbConf):-
 /**
  * Question 4.8
  * getVarListAlt(+T, ?List)
- * Alterne une petite et une grosse equipe par rapport a getVarList.
+ * Alterne une petite et une grande equipe par rapport a getVarList.
+ * Utilise le fait que les equipes sont donnes dans un tableau ordonne.
+ * L'ajout a la liste est donc realise en partant des deux extremites et en allant vers le milieu.
  */
 getVarListAlt(T, List):-
 	dim(T, [NbEquipes, NbConf]),
 	(for(J, 0, NbConf-1), fromto([], In, Out, List), param(T, NbEquipes, NbConf) do
 		MoitieNbEquipes is div(NbEquipes, 2),
-		(for(I, 1, MoitieNbEquipes), fromto([], SubIn, SubOut, SubList), param(MoitieNbEquipes, T, J, NbConf, NbEquipes) do
+		(for(I, 0, MoitieNbEquipes-1), fromto([], SubIn, SubOut, SubList), param(MoitieNbEquipes, T, J, NbConf, NbEquipes) do
+			% Les indices sont inverses car fromto inverse les listes:
 			JInv is NbConf - J,
-			Elem1 is T[MoitieNbEquipes-I+1, JInv],
-			Elem2 is T[NbEquipes-(MoitieNbEquipes-I+1)+1, JInv],
+			IInv is MoitieNbEquipes - I,
+			Elem1 is T[IInv, JInv], % Une grande equipe.
+			Elem2 is T[NbEquipes-IInv+1, JInv], % Une petite equipe.
 			SubOut = [Elem1, Elem2|SubIn]
 		),
 		append(SubList, In, Out)
