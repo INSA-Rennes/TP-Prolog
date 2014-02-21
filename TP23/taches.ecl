@@ -104,4 +104,4 @@ conflits(Taches):-
 /**
  * Question 3.8
  */
-%Fin #< 43, solve(Taches, Fin).
+Fin #< 43, solve(Taches, Fin).
