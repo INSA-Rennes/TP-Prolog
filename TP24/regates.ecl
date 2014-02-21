@@ -4,11 +4,13 @@
  * Question 4.1
  * getData(?TailleEquipes, ?NbEquipes, ?CapaBateaux, ?NbBateaux, ?NbConf)
  */
-getData(TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, 3):-
-	TailleEquipes = [](5, 5, 2, 1),
-	dim(TailleEquipes, NbEquipes),
-	CapaBateaux = [](7, 6, 5),
-	dim(CapaBateaux, NbBateaux).
+getData(TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, 7):-
+	%TailleEquipes = [](5, 5, 2, 1),
+	TailleEquipes = [](7, 6, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2),
+	dim(TailleEquipes, [NbEquipes]),
+	%CapaBateaux = [](7, 6, 5),
+	CapaBateaux = [](10, 10, 9, 8, 8, 8, 8, 8, 8, 7, 6, 4, 4),
+	dim(CapaBateaux, [NbBateaux]).
 
 /**
  * Question 4.2
@@ -16,22 +18,20 @@ getData(TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, 3):-
  */
 defineVars(T, NbEquipes, NbConf, NbBateaux):-
 	dim(T, [NbEquipes, NbConf]),
-	(foreachelem(Line, T), param(NbBateaux) do
-		(foreachelem(Elem, Line), param(NbBateaux) do
-			Elem #:: 1..NbBateaux
-		)
-	).
+	T #:: 1..NbBateaux.
 
 /**
  * Question 4.3
  * getVarList(+T, ?L)
  */
 getVarList(T, L):-
-	(foreachelem(Line, T), param(L) do
-		(foreachelem(Elem, Line),
-		foreach(Elem, L) do
-			
-		)
+	dim(T, [NbEquipes, NbConf]),
+	(for(J, 0, NbConf-1), fromto([], In, Out, L), param(T, NbEquipes, NbConf) do
+		(for(I, 1, NbEquipes), foreach(Elem, SubL), param(T, J, NbConf) do
+			JInv is NbConf - J,
+			Elem is T[I, JInv]
+		),
+		append(SubL, In, Out)
 	).
 
 /**
@@ -42,11 +42,11 @@ solve(T):-
 	getData(TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, NbConf),
 	defineVars(T, NbEquipes, NbConf, NbBateaux),
 
-	%pasMemeBateaux(T, NbEquipes, NbConf),
-	%pasMemePartenaires(T, NbEquipes, NbConf),
-	%capaBateaux(T, TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, NbConf),
+	pasMemeBateaux(T, NbEquipes, NbConf),
+	pasMemePartenaires(T, NbEquipes, NbConf),
+	capaBateaux(T, TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, NbConf),
 
-	getVarList(T, L),
+	getVarListAlt(T, L),
 	labeling(L).
 
 /**
@@ -55,10 +55,10 @@ solve(T):-
  * Pas deux fois la meme valeur sur une ligne.
  */
 pasMemeBateaux(T, NbEquipes, NbConf):-
-	(foreachelem(Line, T), param(T) do
-		(for(I, 1, NbConf), param(T) do
-			(for(J, I+1, NbConf), param(T) do
-				T[I] #\= T[J]
+	(for(K, 1, NbEquipes), param(T, NbConf) do
+		(for(I, 1, NbConf), param(T, NbConf, K) do
+			(for(J, I+1, NbConf), param(T, I, K) do
+				T[K, I] #\= T[K, J]
 			)
 		)
 	).
@@ -72,9 +72,8 @@ pasMemePartenaires(T, NbEquipes, NbConf):-
 	(for(I, 1, NbEquipes), param(T, NbEquipes, NbConf) do
 		(for(J, I+1, NbEquipes), param(T, NbConf, I) do
 			(for(K, 1, NbConf), param(T, NbConf, I, J) do
-				T[I][K] #= T[J][K] =>
 				(for(X, K+1, NbConf), param(T, I, J, K) do
-					T[I][X] #\= T[J][X]
+					(T[I, K] #= T[J, K]) => (T[I, X] #\= T[J, X])
 				)
 			)
 		)
@@ -85,11 +84,30 @@ pasMemePartenaires(T, NbEquipes, NbConf):-
  * capaBateaux(+T, +TailleEquipes, +NbEquipes, +CapaBateaux, +NbBateaux, +NbConf)
  */
 capaBateaux(T, TailleEquipes, NbEquipes, CapaBateaux, NbBateaux, NbConf):-
-	.
+	(for(Conf, 1, NbConf), param(T, CapaBateaux, TailleEquipes, NbBateaux, NbEquipes) do
+		(for(Bateau, 1, NbBateaux), param(T, CapaBateaux, TailleEquipes, Conf, NbEquipes) do
+			(for(Equipe, 1, NbEquipes), fromto(0, TailleTotale, NewTailleTotale, TailleFinale),
+			param(T, TailleEquipes, Bateau, Conf) do
+				NewTailleTotale #= TailleTotale + (T[Equipe, Conf] #= Bateau) * TailleEquipes[Equipe]
+			),
+			CapaBateaux[Bateau] #>= TailleFinale
+		)
+	).
 
 /**
  * Question 4.8
- * getVarListAlt(+T, ?L)
+ * getVarListAlt(+T, ?List)
+ * Alterne une petite et une grosse equipe par rapport a getVarList.
  */
-getVarListAlt(T, L):-
-	.
+getVarListAlt(T, List):-
+	dim(T, [NbEquipes, NbConf]),
+	(for(J, 0, NbConf-1), fromto([], In, Out, List), param(T, NbEquipes, NbConf) do
+		MoitieNbEquipes is div(NbEquipes, 2),
+		(for(I, 1, MoitieNbEquipes), fromto([], SubIn, SubOut, SubList), param(MoitieNbEquipes, T, J, NbConf, NbEquipes) do
+			JInv is NbConf - J,
+			Elem1 is T[MoitieNbEquipes-I+1, JInv],
+			Elem2 is T[NbEquipes-(MoitieNbEquipes-I+1)+1, JInv],
+			SubOut = [Elem1, Elem2|SubIn]
+		),
+		append(SubList, In, Out)
+	).
