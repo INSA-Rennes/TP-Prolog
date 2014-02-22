@@ -1,3 +1,6 @@
+:- lib(ic).
+:- lib(branch_and_bound).
+
 /**
  * Question 5.1
  */
@@ -22,11 +25,12 @@ benefices(Benefices):-
 /**
  * fabrique(?Fabrique)
  */
-fabrique(Fabrique):-
+fabrique(Fabriquer):-
 	techniciens(Techniciens),
-	dim(Techniciens, Taille),
-	dim(Fabrique, Taille),
-	Fabrique #:: 0..1.
+	dim(Techniciens, [Taille]),
+	dim(Fabriquer, [Taille]),
+	Fabriquer #:: 0..1.
+
 
 /**
  * Question 5.2
@@ -36,8 +40,8 @@ fabrique(Fabrique):-
  */
 nb_ouvriers(Fabriquer, NbOuvriers):-
 	techniciens(Techniciens),
-	dim(Techniciens, Taille),
-	(for(I, 1, Taille), fromto(0, In, Out, NbOuvriers) do
+	dim(Techniciens, [Taille]),
+	(for(I, 1, Taille), fromto(0, In, Out, NbOuvriers), param(Fabriquer, Techniciens) do
 		Out #= Fabriquer[I] * Techniciens[I] + In
 	).
 
@@ -47,9 +51,10 @@ nb_ouvriers(Fabriquer, NbOuvriers):-
 benefices_totaux(Fabriquer, BeneficesTotaux):-
 	quantites(Quantites),
 	benefices(Benefices),
-	dim(Benefices, Taille),
-	(for(I, 1, Taille) do
-		BeneficesTotaux[I] #= Do * Quantites[I] * Benefices[I]
+	dim(Benefices, [Taille]),
+	dim(BeneficesTotaux, [Taille]),
+	(for(I, 1, Taille), param(BeneficesTotaux, Fabriquer, Quantites, Benefices) do
+		BeneficesTotaux[I] #= Fabriquer[I] * Quantites[I] * Benefices[I]
 	).
 
 /**
@@ -58,11 +63,14 @@ benefices_totaux(Fabriquer, BeneficesTotaux):-
 profit_total(Fabriquer, Profit):-
 	benefices_totaux(Fabriquer, BeneficesTotaux),
 	(foreachelem(Benef, BeneficesTotaux), fromto(0, In, Out, Profit) do
-		Out #= Do * Benef + In
+		Out #= Benef + In
 	).
+
 
 /**
  * Question 5.3
+ */
+/**
  * pose_contraintes(?Fabriquer, ?NbTechniciensTotal, ?Profit)
  */
 pose_contraintes(Fabriquer, NbTechniciensTotal, Profit):-
@@ -71,15 +79,142 @@ pose_contraintes(Fabriquer, NbTechniciensTotal, Profit):-
 	profit_total(Fabriquer, Profit).
 
 /**
+ * getVarList(+Fabriquer, -VarList)
+ */
+getVarList(Fabriquer, VarList):-
+	(foreachelem(Do, Fabriquer), foreach(Var, VarList) do
+		Var = Do
+	).
+
+/**
+ * resoudre(?Fabriquer, ?NbTechniciensTotal, ?Profit)
+ */
+resoudre(Fabriquer, NbTechniciensTotal, Profit):-
+	fabrique(Fabriquer),
+	pose_contraintes(Fabriquer, NbTechniciensTotal, Profit),
+	getVarList(Fabriquer, VarList),
+	labeling([NbTechniciensTotal|VarList]).
+
+
+/**
  * Question 5.4
  */
+equation(X):-
+	[X, Y, Z, W] #:: [0..10],
+	X #= Z + Y + 2*W,
+	X #\= Z + Y + W,
+	labeling([X, Y, Z, W]).
+%minimize(equation(X), X).
 
 
 /**
  * Question 5.5
  */
+resoudre_inv(Fabriquer, NbTechniciensTotal, ProfitInv):-
+	resoudre(Fabriquer, NbTechniciensTotal, Profit),
+	ProfitInv is 1000000 - Profit.
+resoudre_opti(Fabriquer, NbTechniciensTotal, Profit):-
+	minimize(resoudre_inv(Fabriquer, NbTechniciensTotal, ProfitInv), ProfitInv),
+	Profit is 1000000 - ProfitInv.
 
 
 /**
  * Question 5.6
  */
+resoudre_licenciements(Fabriquer, NbTechniciensTotal, Profit):-
+	Profit #> 1000,
+	minimize(resoudre(Fabriquer, NbTechniciensTotal, Profit), NbTechniciensTotal).
+
+
+
+/**
+ * Tests
+ */
+/*
+fabrique(Fabriquer).
+	Fabriquer = [](_11162{[0, 1]}, _11180{[0, 1]}, _11198{[0, 1]}, _11216{[0, 1]}, _11234{[0, 1]}, _11252{[0, 1]}, _11270{[0, 1]}, _11288{[0, 1]}, _11306{[0, 1]})
+	Yes (0.00s cpu)
+
+fabrique(Fabriquer), nb_ouvriers(Fabriquer, NbOuvriers).
+	Fabriquer = [](_376{[0, 1]}, _394{[0, 1]}, _412{[0, 1]}, _430{[0, 1]}, _448{[0, 1]}, _466{[0, 1]}, _484{[0, 1]}, _502{[0, 1]}, _520{[0, 1]})
+	NbOuvriers = NbOuvriers{0 .. 47}
+	There are 9 delayed goals. Do you want to see them? (y/n)
+	Yes (0.00s cpu)
+
+fabrique(Fabriquer), benefices_totaux(Fabriquer, Benefs).
+	Fabriquer = [](_376{[0, 1]}, _394{[0, 1]}, _412{[0, 1]}, _430{[0, 1]}, _448{[0, 1]}, _466{[0, 1]}, _484{[0, 1]}, _502{[0, 1]}, _520{[0, 1]})
+	Benefs = [](_685{0 .. 560}, _1249{0 .. 650}, _1813{0 .. 480}, _2377{0 .. 475}, _2941{0 .. 420}, _3505{0 .. 340}, _4069{0 .. 700}, _4633{0 .. 300}, _5197{0 .. 495})
+	There are 9 delayed goals. Do you want to see them? (y/n)
+	Yes (0.01s cpu)
+
+fabrique(Fabriquer), profit_total(Fabriquer, Profit).
+	Fabriquer = [](_376{[0, 1]}, _394{[0, 1]}, _412{[0, 1]}, _430{[0, 1]}, _448{[0, 1]}, _466{[0, 1]}, _484{[0, 1]}, _502{[0, 1]}, _520{[0, 1]})
+	Profit = Profit{0 .. 4420}
+	There are 17 delayed goals. Do you want to see them? (y/n)
+	Yes (0.00s cpu)
+
+fabrique(Fabriquer), pose_contraintes(Fabriquer, 22, Profit).
+	Fabriquer = [](_390{[0, 1]}, _408{[0, 1]}, _426{[0, 1]}, _444{[0, 1]}, _462{[0, 1]}, _480{[0, 1]}, _498{[0, 1]}, _516{[0, 1]}, _534{[0, 1]})
+	Profit = Profit{0 .. 4420}
+	There are 26 delayed goals. Do you want to see them? (y/n)
+	Yes (0.00s cpu)
+
+resoudre(Fabriquer, 22, Profit).
+	Fabriquer = [](0, 0, 0, 0, 0, 0, 0, 0, 0)
+	Profit = 0
+	Yes (0.00s cpu, solution 1, maybe more)
+	Fabriquer = [](0, 0, 0, 0, 0, 0, 0, 0, 1)
+	Profit = 495
+	Yes (0.01s cpu, solution 2, maybe more)
+	Fabriquer = [](0, 0, 0, 0, 0, 0, 0, 1, 0)
+	Profit = 300
+	Yes (0.01s cpu, solution 3, maybe more)
+
+Profit #> 2500, resoudre(Fabriquer, 22, Profit).
+	Profit = 2665
+	Fabriquer = [](0, 1, 1, 0, 0, 1, 1, 0, 1)
+	Yes (0.00s cpu, solution 1, maybe more)
+Profit #> 2665, resoudre(Fabriquer, 22, Profit).
+	No (0.01s cpu)
+
+% Labeling on X:
+minimize(equation(X), X).
+	Found a solution with cost 1
+	Found no solution with cost -1.0Inf .. 0
+	X = 1
+	Yes (0.00s cpu)
+% Labeling on X, Y, Z, W:
+minimize(equation(X), X).
+	Found a solution with cost 2
+	Found no solution with cost -1.0Inf .. 1
+	X = 2
+	Yes (0.00s cpu)
+
+resoudre_opti(Fabriquer, 22, Profit).
+	Found a solution with cost 1000000
+	Found a solution with cost 999505
+	Found a solution with cost 999205
+	Found a solution with cost 998805
+	Found a solution with cost 998505
+	Found a solution with cost 998465
+	Found a solution with cost 998165
+	Found a solution with cost 998045
+	Found a solution with cost 998030
+	Found a solution with cost 997990
+	Found a solution with cost 997985
+	Found a solution with cost 997685
+	Found a solution with cost 997510
+	Found a solution with cost 997335
+	Found no solution with cost -1.0Inf .. 997334
+	Fabriquer = [](0, 1, 1, 0, 0, 1, 1, 0, 1)
+	Profit = 2665
+	Yes (0.01s cpu)
+
+Nb #:: 0..22, resoudre_licenciements(Fabriquer, Nb, Profit).
+	Found a solution with cost 7
+	Found no solution with cost 0.0 .. 6.0
+	Nb = 7
+	Fabriquer = [](1, 0, 1, 0, 0, 0, 0, 0, 0)
+	Profit = 1040
+	Yes (0.00s cpu)
+*/
