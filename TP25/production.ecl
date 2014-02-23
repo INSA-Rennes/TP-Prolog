@@ -169,6 +169,7 @@ resoudre(Fabriquer, 22, Profit).
 	Fabriquer = [](0, 0, 0, 0, 0, 0, 0, 1, 0)
 	Profit = 300
 	Yes (0.01s cpu, solution 3, maybe more)
+	...
 
 Profit #> 2500, resoudre(Fabriquer, 22, Profit).
 	Profit = 2665
