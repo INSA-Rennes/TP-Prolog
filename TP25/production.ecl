@@ -37,6 +37,7 @@ fabrique(Fabriquer):-
  */
 /**
  * nb_ouvriers(?Fabriquer, ?NbOuvriers)
+ * Recupere le nombre d'ouvriers necessaire.
  */
 nb_ouvriers(Fabriquer, NbOuvriers):-
 	techniciens(Techniciens),
@@ -47,6 +48,7 @@ nb_ouvriers(Fabriquer, NbOuvriers):-
 
 /**
  * benefices_totaux(?Fabriquer, ?BeneficesTotaux)
+ * Calcule les benefices totaux pour chaque telephone.
  */
 benefices_totaux(Fabriquer, BeneficesTotaux):-
 	quantites(Quantites),
@@ -59,6 +61,7 @@ benefices_totaux(Fabriquer, BeneficesTotaux):-
 
 /**
  * profit_total(?Fabriquer, ?Profit)
+ * Calcule le profit total.
  */
 profit_total(Fabriquer, Profit):-
 	benefices_totaux(Fabriquer, BeneficesTotaux),
@@ -73,27 +76,20 @@ profit_total(Fabriquer, Profit):-
 /**
  * pose_contraintes(?Fabriquer, ?NbTechniciensTotal, ?Profit)
  */
-pose_contraintes(Fabriquer, NbTechniciensTotal, Profit):-
+pose_contraintes(Fabriquer, NbTechniciensTotal, NbOuvriers, Profit):-
+	% Le nombre d'ouvriers est positif et inferieur au nombre maximal de techniciens.
 	nb_ouvriers(Fabriquer, NbOuvriers),
 	NbOuvriers #=< NbTechniciensTotal,
+	NbOuvriers #>= 0,
 	profit_total(Fabriquer, Profit).
 
 /**
- * getVarList(+Fabriquer, -VarList)
+ * resoudre(?Fabriquer, ?NbTechniciensTotal, ?NbOuvriers, ?Profit)
  */
-getVarList(Fabriquer, VarList):-
-	(foreachelem(Do, Fabriquer), foreach(Var, VarList) do
-		Var = Do
-	).
-
-/**
- * resoudre(?Fabriquer, ?NbTechniciensTotal, ?Profit)
- */
-resoudre(Fabriquer, NbTechniciensTotal, Profit):-
+resoudre(Fabriquer, NbTechniciensTotal, NbOuvriers, Profit):-
 	fabrique(Fabriquer),
-	pose_contraintes(Fabriquer, NbTechniciensTotal, Profit),
-	getVarList(Fabriquer, VarList),
-	labeling([NbTechniciensTotal|VarList]).
+	pose_contraintes(Fabriquer, NbTechniciensTotal, NbOuvriers, Profit),
+	labeling(Fabriquer).
 
 
 /**
@@ -104,33 +100,44 @@ equation(X):-
 	X #= Z + Y + 2*W,
 	X #\= Z + Y + W,
 	labeling([X, Y, Z, W]).
-%minimize(equation(X), X).
+
+% Labeling on X:
+minimize(equation(X), X).
+	Found a solution with cost 1
+	Found no solution with cost -1.0Inf .. 0
+	X = 1
+	Yes (0.00s cpu)
+% Labeling on X, Y, Z, W:
+minimize(equation(X), X).
+	Found a solution with cost 2
+	Found no solution with cost -1.0Inf .. 1
+	X = 2
+	Yes (0.00s cpu)
 
 
 /**
  * Question 5.5
  */
-resoudre_inv(Fabriquer, NbTechniciensTotal, ProfitInv):-
-	resoudre(Fabriquer, NbTechniciensTotal, Profit),
-	ProfitInv is 1000000 - Profit.
-resoudre_opti(Fabriquer, NbTechniciensTotal, Profit):-
-	minimize(resoudre_inv(Fabriquer, NbTechniciensTotal, ProfitInv), ProfitInv),
-	Profit is 1000000 - ProfitInv.
+resoudre_inv(Fabriquer, NbTechniciensTotal, NbOuvriers, ProfitInv):-
+	resoudre(Fabriquer, NbTechniciensTotal, NbOuvriers, Profit),
+	ProfitInv #= -Profit.
+resoudre_opti(Fabriquer, NbTechniciensTotal, NbOuvriers, Profit):-
+	minimize(resoudre_inv(Fabriquer, NbTechniciensTotal, NbOuvriers, ProfitInv), ProfitInv),
+	Profit is -ProfitInv.
 
 
 /**
  * Question 5.6
  */
-resoudre_licenciements(Fabriquer, NbTechniciensTotal, Profit):-
+resoudre_licenciements(Fabriquer, NbTechniciensTotal, NbOuvriers, Profit):-
 	Profit #> 1000,
-	minimize(resoudre(Fabriquer, NbTechniciensTotal, Profit), NbTechniciensTotal).
+	minimize(resoudre(Fabriquer, NbTechniciensTotal, NbOuvriers, Profit), NbOuvriers).
 
 
 
 /**
  * Tests
  */
-/*
 fabrique(Fabriquer).
 	Fabriquer = [](_11162{[0, 1]}, _11180{[0, 1]}, _11198{[0, 1]}, _11216{[0, 1]}, _11234{[0, 1]}, _11252{[0, 1]}, _11270{[0, 1]}, _11288{[0, 1]}, _11306{[0, 1]})
 	Yes (0.00s cpu)
@@ -159,63 +166,58 @@ fabrique(Fabriquer), pose_contraintes(Fabriquer, 22, Profit).
 	There are 26 delayed goals. Do you want to see them? (y/n)
 	Yes (0.00s cpu)
 
-resoudre(Fabriquer, 22, Profit).
+resoudre(Fabriquer, 22, NbOuvriers, Profit).
 	Fabriquer = [](0, 0, 0, 0, 0, 0, 0, 0, 0)
+	NbOuvriers = 0
 	Profit = 0
 	Yes (0.00s cpu, solution 1, maybe more)
 	Fabriquer = [](0, 0, 0, 0, 0, 0, 0, 0, 1)
+	NbOuvriers = 3
 	Profit = 495
-	Yes (0.01s cpu, solution 2, maybe more)
+	Yes (0.00s cpu, solution 2, maybe more)
 	Fabriquer = [](0, 0, 0, 0, 0, 0, 0, 1, 0)
+	NbOuvriers = 5
 	Profit = 300
-	Yes (0.01s cpu, solution 3, maybe more)
+	Yes (0.00s cpu, solution 3, maybe more)
 	...
 
-Profit #> 2500, resoudre(Fabriquer, 22, Profit).
+Profit #> 2500, resoudre(Fabriquer, 22, NbOuvriers, Profit).
 	Profit = 2665
 	Fabriquer = [](0, 1, 1, 0, 0, 1, 1, 0, 1)
+	NbOuvriers = 22
 	Yes (0.00s cpu, solution 1, maybe more)
-Profit #> 2665, resoudre(Fabriquer, 22, Profit).
+	...
+Profit #> 2665, resoudre(Fabriquer, 22, NbOuvriers, Profit).
 	No (0.01s cpu)
 
-% Labeling on X:
-minimize(equation(X), X).
-	Found a solution with cost 1
-	Found no solution with cost -1.0Inf .. 0
-	X = 1
-	Yes (0.00s cpu)
-% Labeling on X, Y, Z, W:
-minimize(equation(X), X).
-	Found a solution with cost 2
-	Found no solution with cost -1.0Inf .. 1
-	X = 2
-	Yes (0.00s cpu)
-
-resoudre_opti(Fabriquer, 22, Profit).
-	Found a solution with cost 1000000
-	Found a solution with cost 999505
-	Found a solution with cost 999205
-	Found a solution with cost 998805
-	Found a solution with cost 998505
-	Found a solution with cost 998465
-	Found a solution with cost 998165
-	Found a solution with cost 998045
-	Found a solution with cost 998030
-	Found a solution with cost 997990
-	Found a solution with cost 997985
-	Found a solution with cost 997685
-	Found a solution with cost 997510
-	Found a solution with cost 997335
-	Found no solution with cost -1.0Inf .. 997334
+resoudre_opti(Fabriquer, 22, NbOuvriers, Profit).
+	Found a solution with cost 0
+	Found a solution with cost -495
+	Found a solution with cost -795
+	Found a solution with cost -1195
+	Found a solution with cost -1495
+	Found a solution with cost -1535
+	Found a solution with cost -1835
+	Found a solution with cost -1955
+	Found a solution with cost -1970
+	Found a solution with cost -2010
+	Found a solution with cost -2015
+	Found a solution with cost -2315
+	Found a solution with cost -2490
+	Found a solution with cost -2665
+	Found no solution with cost -1.0Inf .. -2666
 	Fabriquer = [](0, 1, 1, 0, 0, 1, 1, 0, 1)
+	NbOuvriers = 22
 	Profit = 2665
 	Yes (0.01s cpu)
 
-Nb #:: 0..22, resoudre_licenciements(Fabriquer, Nb, Profit).
+resoudre_licenciements(Fabriquer, 22, NbOuvriers, Profit).
+	Found a solution with cost 10
+	Found a solution with cost 9
+	Found a solution with cost 8
 	Found a solution with cost 7
-	Found no solution with cost 0.0 .. 6.0
-	Nb = 7
+	Found no solution with cost -1.0Inf .. 6
 	Fabriquer = [](1, 0, 1, 0, 0, 0, 0, 0, 0)
+	NbOuvriers = 7
 	Profit = 1040
 	Yes (0.00s cpu)
-*/

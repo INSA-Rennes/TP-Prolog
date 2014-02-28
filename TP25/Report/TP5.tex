@@ -48,5 +48,12 @@
 
 \subsection*{Question 5.4}
 
+Si on labelle uniquement sur $X$ le solveur nous trouve une valeur minimum de 1 ce qui est faux.
+Comme les variables sont des entiers : $X = 1 \Rightarrow z = 1\ ou\ y = 1$.
+Or $x \ne z + y + w$, donc ce n'est pas possible.
+Le solveur a encore des \textit{delayed goals} et n'a donc pas vérifié que la valeur associée à $X$ est possible.
+
+Il faut donc toujours labeller sur toutes les variables dans le but pour ne pas avoir de \textit{delayed goals}.
+
 
 \end{document}
