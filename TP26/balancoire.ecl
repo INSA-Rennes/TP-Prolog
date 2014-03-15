@@ -35,11 +35,11 @@ nb_chaque_cote(Places, NbGauche):-
 	).
 
 /**
- * moment_total(?Places, ?Poids, ?MomentTotal, ?MomentTotalGauche)
+ * moment_total(?Places, ?Poids, ?MomentTotal, ?SumMomentNorms)
  */
-moment_total(Places, Poids, MomentTotal, MomentTotalGauche):-
+moment_total(Places, Poids, MomentTotal, SumMomentNorms):-
 	(foreachelem(Place, Places), foreachelem(Poid, Poids),
-	fromto(0, In, Out, MomentTotal), fromto(0, InGauche, OutGauche, MomentTotalGauche) do
+	fromto(0, In, Out, MomentTotal), fromto(0, InGauche, OutGauche, SumMomentNorms) do
 		Out #= In + Place * Poid,
 		OutGauche #= InGauche + abs(Place) * Poid
 	).
@@ -76,18 +76,18 @@ differents(Places):-
 	).
 
 /**
- * pose_contraintes(?Places)
+ * pose_contraintes(?Places, ?Famille, ?Poids, ?SumMomentNorms)
  * Verifie qu'il y a 5 personnes de chaque cote.
  * Verifie que la balancoire est equilibree.
  * Verifie que les parents encadrent les enfants et
  * que les deux plus jeunes sont juste devant leurs parents.
  */
-pose_contraintes(Places, Famille, Poids, MomentTotalGauche):-
+pose_contraintes(Places, Famille, Poids, SumMomentNorms):-
 	differents(Places),
 	
 	nb_chaque_cote(Places, 5),
 	
-	moment_total(Places, Poids, 0, MomentTotalGauche),
+	moment_total(Places, Poids, 0, SumMomentNorms),
 
 	ic:min(Places, PosGauche),
 	ic:max(Places, PosDroite),
@@ -102,10 +102,10 @@ pose_contraintes(Places, Famille, Poids, MomentTotalGauche):-
 /**
  * resoudre(?Places)
  */
-resoudre(Places, MomentTotalGauche):-
+resoudre(Places, SumMomentNorms):-
 	famille(Famille, Poids),
 	places(Places),
-	pose_contraintes(Places, Famille, Poids, MomentTotalGauche),
+	pose_contraintes(Places, Famille, Poids, SumMomentNorms),
 	labeling(Places).
 
 
@@ -124,9 +124,73 @@ resoudre(Places, MomentTotalGauche):-
 /**
  * Question 6.4
  */
-resoudre_opti(Places, MomentTotalGauche):-
-	minimize(resoudre(Places, MomentTotalGauche), MomentTotalGauche).
+resoudre_opti(Places, SumMomentNorms):-
+	minimize(resoudre(Places, SumMomentNorms), SumMomentNorms).
 
+
+resoudre_v1(Places, SumMomentNorms):-
+	famille(Famille, Poids),
+	places(Places),
+	pose_contraintes(Places, Famille, Poids, SumMomentNorms),
+	search(Places, 0, most_constrained, indomain_split, complete, []).
+
+resoudre_opti_v1(Places, SumMomentNorms):-
+	minimize(resoudre_v1(Places, SumMomentNorms), SumMomentNorms).
+
+
+assign(Var):-
+	ic:get_domain_as_list(Var, Domain),
+	assign(Var, Domain, Domain, 1).
+assign(Var, SavedDomain, [], Min):-
+	Min < 1000,
+	NextMin is Min + 1,
+	assign(Var, SavedDomain, SavedDomain, NextMin).
+assign(First, _, [First|_], Min):-
+	abs(First) =:= Min.
+assign(Var, SavedDomain, [_|Domain], Min):-
+	assign(Var, SavedDomain, Domain, Min).
+
+resoudre_v2(Places, SumMomentNorms):-
+	famille(Famille, Poids),
+	places(Places),
+	pose_contraintes(Places, Famille, Poids, SumMomentNorms),
+	search(Places, 0, input_order, indomain_middle, complete, []).
+
+resoudre_opti_v2(Places, SumMomentNorms):-
+	minimize(resoudre_v2(Places, SumMomentNorms), SumMomentNorms).
+
+
+resoudre_v3(Places, SumMomentNorms):-
+	famille(Famille, Poids),
+	places(Places),
+	pose_contraintes(Places, Famille, Poids, SumMomentNorms),
+	search(Places, 0, most_constrained, indomain_middle, complete, []).
+
+resoudre_opti_v3(Places, SumMomentNorms):-
+	minimize(resoudre_v3(Places, SumMomentNorms), SumMomentNorms).
+
+
+getVarList(Places, [Luc, Tom, Jim, Lou, Zoe, Ted, Ron, Kim, Max, Dan]):-
+	Ron is Places[1],
+	Zoe is Places[2],
+	Jim is Places[3],
+	Lou is Places[4],
+	Luc is Places[5],
+	Dan is Places[6],
+	Ted is Places[7],
+	Tom is Places[8],
+	Max is Places[9],
+	Kim is Places[10].
+
+resoudre_v4(Places, SumMomentNorms):-
+	famille(Famille, Poids),
+	places(Places),
+	pose_contraintes(Places, Famille, Poids, SumMomentNorms),
+	getVarList(Places, VarList),
+	search(VarList, 0, most_constrained, indomain_middle, complete, []).
+
+resoudre_opti_v4(Places, SumMomentNorms):-
+	minimize(resoudre_v4(Places, SumMomentNorms), SumMomentNorms).
 
 /**
  * Tests
@@ -157,12 +221,74 @@ places(Places), extremites(Places, PlusAGauche, PlusADroite).
 	There are 238 delayed goals. Do you want to see them? (y/n)
 	Yes (0.01s cpu)
 
-resoudre(Places).
-	Places = [](-6, -5, -4, -8, 2, 5, 3, 6, -7, 1)
-	Yes (618.47s cpu, solution 1, maybe more)
-	Places = [](-6, -5, -1, 8, 5, 7, 3, -8, -7, 1)
-	Yes (628.51s cpu, solution 2, maybe more)
-	Places = [](-6, -5, 1, -8, -2, 6, 5, 7, -7, 4)
-	Yes (630.48s cpu, solution 3, maybe more)
-	...
+resoudre_opti(Places, Moment).
+	Found a solution with cost 2914
+	Found a solution with cost 2858
+	Found a solution with cost 2808
+	Found a solution with cost 2722
+	Found a solution with cost 2716
+	Found a solution with cost 2708
+	Found a solution with cost 2694
+	Found a solution with cost 2602
+	Found a solution with cost 2594
+	Found a solution with cost 2524
+	Found a solution with cost 2474
+	Found a solution with cost 2430
+	Found a solution with cost 2392
+	Found a solution with cost 2344
+	Found a solution with cost 2296
+	Found a solution with cost 2218
+	Found a solution with cost 2196
+	Found a solution with cost 2154
+	Found a solution with cost 2142
+	Found a solution with cost 2064
+	Found a solution with cost 1958
+	Found a solution with cost 1890
+	Found a solution with cost 1748
+	Found a solution with cost 1744
+	Found a solution with cost 1704
+	Found a solution with cost 1604
+	Found no solution with cost -1.0Inf .. 1603
+	Places = [](3, -1, 2, 6, 1, -4, -3, -5, 5, -2)
+	Moment = 1604
+	Yes (1.38s cpu)
+
+resoudre_opti_v1(Places, Moment).
+	Found a solution with cost 1890
+	Found a solution with cost 1604
+	Found no solution with cost -1.0Inf .. 1603
+	Places = [](3, -1, 2, 6, 1, -4, -3, -5, 5, -2)
+	Moment = 1604
+	Yes (0.17s cpu)
+
+resoudre_opti_v2(Places, Moment).
+	Found a solution with cost 2554
+	Found a solution with cost 2352
+	Found a solution with cost 2276
+	Found a solution with cost 2106
+	Found a solution with cost 1944
+	Found a solution with cost 1866
+	Found a solution with cost 1750
+	Found a solution with cost 1704
+	Found a solution with cost 1604
+	Found no solution with cost -1.0Inf .. 1603
+	Places = [](3, -1, 2, 6, 1, -4, -3, -5, 5, -2)
+	Moment = 1604
+	Yes (1.00s cpu)
+
+resoudre_opti_v3(Places, Moment).
+	Found a solution with cost 1890
+	Found a solution with cost 1604
+	Found no solution with cost -1.0Inf .. 1603
+	Places = [](3, -1, 2, 6, 1, -4, -3, -5, 5, -2)
+	Moment = 1604
+	Yes (0.15s cpu)
+
+resoudre_opti_v4(Places, Moment).
+	Found a solution with cost 1696
+	Found a solution with cost 1604
+	Found no solution with cost -1.0Inf .. 1603
+	Places = [](3, -1, 2, 6, 1, -4, -3, -5, 5, -2)
+	Moment = 1604
+	Yes (0.14s cpu)
 */
