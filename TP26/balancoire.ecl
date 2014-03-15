@@ -1,5 +1,6 @@
 :- lib(ic).
 :- lib(ic_symbolic).
+:- lib(branch_and_bound).
 
 :- local domain(personnes(ron, zoe, jim, lou, luc, dan, ted, tom, max, kim)).
 
@@ -23,23 +24,24 @@ places(Places):-
 	famille(_, Poids),
 	dim(Poids, [Taille]),
 	dim(Places, [Taille]),
-	Places #:: -8..8.
+	Places #:: [-8.. -1, 1..8].
 
 /**
- * nb_chaque_cote(Places, ?NbGauche, ?NbDroite)
+ * nb_chaque_cote(Places, ?NbGauche)
  */
-nb_chaque_cote(Places, NbGauche, NbDroite):-
-	(foreachelem(Place, Places), fromto(0, InGauche, OutGauche, NbGauche), fromto(0, InDroite, OutDroite, NbDroite) do
-		OutDroite #= InDroite + (Place #> 0),
+nb_chaque_cote(Places, NbGauche):-
+	(foreachelem(Place, Places), fromto(0, InGauche, OutGauche, NbGauche) do
 		OutGauche #= InGauche + (Place #< 0)
 	).
 
 /**
- * moment_total(?Places, ?Poids, ?MomentTotal)
+ * moment_total(?Places, ?Poids, ?MomentTotal, ?MomentTotalGauche)
  */
-moment_total(Places, Poids, MomentTotal):-
-	(foreachelem(Place, Places), foreachelem(Poid, Poids), fromto(0, In, Out, MomentTotal) do
-		Out #= In + Place * Poid
+moment_total(Places, Poids, MomentTotal, MomentTotalGauche):-
+	(foreachelem(Place, Places), foreachelem(Poid, Poids),
+	fromto(0, In, Out, MomentTotal), fromto(0, InGauche, OutGauche, MomentTotalGauche) do
+		Out #= In + Place * Poid,
+		OutGauche #= InGauche + abs(Place) * Poid
 	).
 
 /**
@@ -80,36 +82,31 @@ differents(Places):-
  * Verifie que les parents encadrent les enfants et
  * que les deux plus jeunes sont juste devant leurs parents.
  */
-pose_contraintes(Places, Famille, Poids):-
+pose_contraintes(Places, Famille, Poids, MomentTotalGauche):-
 	differents(Places),
 	
-	nb_chaque_cote(Places, 5, 5),
+	nb_chaque_cote(Places, 5),
 	
-	moment_total(Places, Poids, 0),
+	moment_total(Places, Poids, 0, MomentTotalGauche),
 
-	(PlusAGauche #= 8 and PlusADroite #= 4) or
-	(PlusAGauche #= 4 and PlusADroite #= 8),
-	(Places[6]#=PosGauche+1 and Places[9]#=PosDroite-1) or
-	(Places[9]#=PosGauche+1 and Places[6]#=PosDroite-1),
-	extremites(Places, PlusAGauche, PosGauche, PlusADroite, PosDroite).
+	ic:min(Places, PosGauche),
+	ic:max(Places, PosDroite),
+	Places[8] #= PosGauche,
+	Places[4] #= PosDroite,
 
-/**
- * getVarList(+Places, -VarList)
- */
-getVarList(Places, VarList):-
-	(foreachelem(Place, Places), foreach(Var, VarList) do
-		Var = Place
-	).
+	PosDan is Places[6],
+	PosMax is Places[9],
+	(PosDan#=PosGauche+1 and PosMax#=PosDroite-1) or
+	(PosMax#=PosGauche+1 and PosDan#=PosDroite-1).
 
 /**
  * resoudre(?Places)
  */
-resoudre(Places):-
+resoudre(Places, MomentTotalGauche):-
 	famille(Famille, Poids),
 	places(Places),
-	pose_contraintes(Places, Famille, Poids)/*,
-	getVarList(Places, VarList),
-	labeling(VarList)*/.
+	pose_contraintes(Places, Famille, Poids, MomentTotalGauche),
+	labeling(Places).
 
 
 /**
@@ -127,7 +124,8 @@ resoudre(Places):-
 /**
  * Question 6.4
  */
-
+resoudre_opti(Places, MomentTotalGauche):-
+	minimize(resoudre(Places, MomentTotalGauche), MomentTotalGauche).
 
 
 /**
