@@ -44,4 +44,16 @@ labeling_symbolic([Var|Liste]):-
 resoudre(Parent1, Parent2, Enfant, AffE, AffEselonP1, AffP1, Aff1P2, Aff2P2):-
 	domain(Parent1, Parent2, Enfant, AffE, AffEselonP1, AffP1, Aff1P2, Aff2P2),
 	
+	AffEselonP1 #= (Enfant &= femme),
+	AffP1 #= (AffEselonP1 #= AffE),
+	Aff1P2 #= (Enfant &= homme),
+	Aff2P2 #= (AffE #= 0),
+
+	affirme(Parent1, AffP1),
+	affirme(Parent2, Aff1P2, Aff2P2),
+	affirme(Parent2, Aff1P2),
+	affirme(Parent2, Aff2P2),
+
+	Parent1 &\= Parent2,
+
 	labeling_symbolic([Parent1, Parent2, Enfant, AffE, AffEselonP1, AffP1, Aff1P2, Aff2P2]).
