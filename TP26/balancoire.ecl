@@ -110,24 +110,17 @@ resoudre(Places, SumMomentNorms):-
 
 
 /**
- * Question 6.2
- */
-
-
-
-/**
- * Question 6.3
- */
-
-
-
-/**
  * Question 6.4
  */
 resoudre_opti(Places, SumMomentNorms):-
 	minimize(resoudre(Places, SumMomentNorms), SumMomentNorms).
 
 
+/**
+ * Version optimisee 1.
+ * Commence par restreindre les variables les plus contraintes
+ * parmi celles de domaine minimal.
+ */
 resoudre_v1(Places, SumMomentNorms):-
 	famille(Famille, Poids),
 	places(Places),
@@ -138,18 +131,10 @@ resoudre_opti_v1(Places, SumMomentNorms):-
 	minimize(resoudre_v1(Places, SumMomentNorms), SumMomentNorms).
 
 
-assign(Var):-
-	ic:get_domain_as_list(Var, Domain),
-	assign(Var, Domain, Domain, 1).
-assign(Var, SavedDomain, [], Min):-
-	Min < 1000,
-	NextMin is Min + 1,
-	assign(Var, SavedDomain, SavedDomain, NextMin).
-assign(First, _, [First|_], Min):-
-	abs(First) =:= Min.
-assign(Var, SavedDomain, [_|Domain], Min):-
-	assign(Var, SavedDomain, Domain, Min).
-
+/**
+ * Version optimisee 2.
+ * Commence par les positions au centre de la balancoire.
+ */
 resoudre_v2(Places, SumMomentNorms):-
 	famille(Famille, Poids),
 	places(Places),
@@ -160,6 +145,10 @@ resoudre_opti_v2(Places, SumMomentNorms):-
 	minimize(resoudre_v2(Places, SumMomentNorms), SumMomentNorms).
 
 
+/**
+ * Version optimisee 3.
+ * Combine les versions 1 et 2.
+ */
 resoudre_v3(Places, SumMomentNorms):-
 	famille(Famille, Poids),
 	places(Places),
@@ -170,6 +159,11 @@ resoudre_opti_v3(Places, SumMomentNorms):-
 	minimize(resoudre_v3(Places, SumMomentNorms), SumMomentNorms).
 
 
+/**
+ * Version optimisee 4.
+ * L'ordre des variables est adapte au probleme
+ * pour placer en premier les personnes les plus lourdes
+ */
 getVarList(Places, [Luc, Tom, Jim, Lou, Zoe, Ted, Ron, Kim, Max, Dan]):-
 	Ron is Places[1],
 	Zoe is Places[2],
@@ -187,10 +181,11 @@ resoudre_v4(Places, SumMomentNorms):-
 	places(Places),
 	pose_contraintes(Places, Famille, Poids, SumMomentNorms),
 	getVarList(Places, VarList),
-	search(VarList, 0, most_constrained, indomain_middle, complete, []).
+	search(VarList, 0, occurrence, indomain_middle, complete, []).
 
 resoudre_opti_v4(Places, SumMomentNorms):-
 	minimize(resoudre_v4(Places, SumMomentNorms), SumMomentNorms).
+
 
 /**
  * Tests
@@ -290,5 +285,5 @@ resoudre_opti_v4(Places, Moment).
 	Found no solution with cost -1.0Inf .. 1603
 	Places = [](3, -1, 2, 6, 1, -4, -3, -5, 5, -2)
 	Moment = 1604
-	Yes (0.14s cpu)
+	Yes (0.10s cpu)
 */
