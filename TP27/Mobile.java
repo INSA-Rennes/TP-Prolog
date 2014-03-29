@@ -113,10 +113,8 @@ public class Mobile {
 
 	// verifie la coherence des longueurs
 	public boolean longueursCoherentes() {
-		
 		mySolverL.read(myModelL);
 		coherent = mySolverL.solve();
-
 		return coherent;
 	}
 

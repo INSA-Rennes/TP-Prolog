@@ -15,8 +15,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
-public class VisuMobile implements ActionListener
-{
+public class VisuMobile implements ActionListener {
 	// Quelques constantes ...
 	// ... pour les longeurs
 	private final int LONG_MAX = 20;
@@ -50,9 +49,7 @@ public class VisuMobile implements ActionListener
 
 	private Color couleur;
 
-	public VisuMobile()
-	{
-
+	public VisuMobile() {
 		f = new JFrame("TP Contraintes : Mobile");
 		f.setLayout(new BorderLayout());
 		f.setSize(new Dimension(LARGE_FEN, 400));
@@ -89,8 +86,7 @@ public class VisuMobile implements ActionListener
 		L4 = new JComboBox();
 		L4.setMinimumSize(new Dimension(75, 30));
 
-		for (int i = 1; i <= LONG_MAX; i++)
-		{
+		for (int i=1; i<=LONG_MAX; i++)	{
 			L1.addItem(new Integer(i));
 			L2.addItem(new Integer(i));
 			L3.addItem(new Integer(i));
@@ -122,10 +118,8 @@ public class VisuMobile implements ActionListener
 
 		couleur = COUL_OK;
 
-		conteneur = new JPanel()
-		{
-			public void paintComponent(Graphics g)
-			{
+		conteneur = new JPanel() {
+			public void paintComponent(Graphics g) {
 				//g.clearRect(0, 0, LARGE_FEN, 200);
 				super.paintComponent(g);
 				g.setColor(couleur);
@@ -145,8 +139,7 @@ public class VisuMobile implements ActionListener
 				g.drawLine(xg2, 3 * PETIT, xd2, 3 * PETIT);
 				g.drawLine(xg2, 3 * PETIT, xg2, 4 * PETIT);
 				g.drawLine(xd2, 3 * PETIT, xd2, 4 * PETIT);
-				if(mob.estEquilibre())	
-				{
+				if(mob.estEquilibre()) {
 					g.setColor(Color.BLACK);
 					// masses
 					int tailM1 = (int)(Math.sqrt(mob.getM1()) * COEF_MASSE);
@@ -160,9 +153,7 @@ public class VisuMobile implements ActionListener
 					g.drawString(new Integer(mob.getM1()).toString(), xg, 5 * PETIT + tailM1);
 					g.drawString(new Integer(mob.getM2()).toString(), xg2, 5 * PETIT + tailM2);
 					g.drawString(new Integer(mob.getM3()).toString(), xd2, 5 * PETIT + tailM3);
-				}
-				else
-				{
+				} else {
 					g.drawString("Pas encore resolu !", milieu - 20, 5 * PETIT);
 				}
 			}
@@ -170,59 +161,45 @@ public class VisuMobile implements ActionListener
 
 		f.add(conteneur, BorderLayout.CENTER);
 		f.setVisible(true);
-
-
 	}
 
-	private void createMobile(){
-		mob = new Mobile(
-			((Integer)L1.getSelectedItem()).intValue(),
-			((Integer)L2.getSelectedItem()).intValue(),
-			((Integer)L3.getSelectedItem()).intValue(),
-			((Integer)L4.getSelectedItem()).intValue(),
-			POIDS_MAX);
+	private void createMobile() {
+		mob = new Mobile(((Integer)L1.getSelectedItem()).intValue(),
+						((Integer)L2.getSelectedItem()).intValue(),
+						((Integer)L3.getSelectedItem()).intValue(),
+						((Integer)L4.getSelectedItem()).intValue(),
+						POIDS_MAX);
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (COMM_AUTRE.equals(e.getActionCommand()))
-		{
-			if (!mob.autreSolutionMasse())
-			{
+		if (COMM_AUTRE.equals(e.getActionCommand())) {
+			if (!mob.autreSolutionMasse()) {
 				JOptionPane.showMessageDialog(f, "Pas d'autres solutions !");
 			}
-		}
-		else if (COMM_LONG.equals(e.getActionCommand()))
-		{
+		} else if (COMM_LONG.equals(e.getActionCommand())) {
 			// on cree le nouveau mobile
 			createMobile();
 			// on verifie l'encombrement
-			if (!mob.longueursCoherentes())
-			{
+			if (!mob.longueursCoherentes()) {
 				JOptionPane.showMessageDialog(f, "Encombrement non coherent !");
 				go_Mobile.setEnabled(false);
 				go_Autre.setEnabled(false);
 				couleur = COUL_NON_OK;
-			}
-			else
-			{
+			} else {
 				go_Mobile.setEnabled(true);
 				go_Autre.setEnabled(true);
 				couleur = COUL_OK;
 			}
-		}
-		else
-		{
+		} else {
 			// puis l'equilibre
-				mob.equilibre();
+			mob.equilibre();
 		}
 		System.out.println(mob);
 		conteneur.repaint();
 	}
 
-public static void main(String[] args){
-
-	VisuMobile fen = new VisuMobile();
-	//fen.show();
-
-}
+	public static void main(String[] args) {
+		VisuMobile fen = new VisuMobile();
+		//fen.show();
+	}
 }
