@@ -175,7 +175,9 @@ public class Mobile {
 	// tests
 	public static void main(String[] args) {
 		Mobile m = new Mobile(1, 3, 2, 1, 20);
-		// tester avec (1,1,2,3,20),(1,3,1,1,20),(1,3,2,1,20)
+		// Mobile m = new Mobile(1, 1, 2, 3, 20);
+		// Mobile m = new Mobile(1, 3, 1, 1, 20);
+		// Mobile m = new Mobile(1, 3, 2, 1, 20);
 		System.out.println(m);
 		if (m.longueursCoherentes()) {
 			System.out.println("Encombrement OK");
